@@ -309,6 +309,53 @@ Primero el plan, con las versiones exactas y las preguntas que tengas. No hagas 
 
 ---
 
+## P09 · Revisión final de Android y APK de release
+- **Herramienta:** Claude Code, Plan mode.
+- **Prompt:**
+```
+P09: revisión final de Android y APK de release. Sigue CLAUDE.md y DECISIONS.md (en especial D34 y su riesgo con la fuente agrandada).
+
+1. Fuente del sistema agrandada:
+   - Revisa todas las pantallas con font_scale 1.3 y 2.0 (adb shell settings put system font_scale X). Dame los comandos para que yo lo pruebe en el emulador.
+   - Riesgo conocido: el header del listado tiene alto fijo de 148 para getItemLayout (D34). Propón cómo evitar que recorte texto sin perder getItemLayout exacto (por ejemplo, calcular el alto con PixelRatio.getFontScale() o limitar maxFontSizeMultiplier solo donde se justifique). No quiero desactivar el escalado de fuente en toda la app: es accesibilidad.
+   - Revisa también la tarjeta del producto (alto fijo de 350) con la misma lógica.
+2. Pantallas pequeñas: revisa que el listado, el carrito y el checkout funcionen en un ancho de 360 dp.
+3. APK de release:
+   - Genera un APK de release instalable (./gradlew assembleRelease). Explícame cómo se firma hoy (la plantilla usa el keystore de debug) y si eso es aceptable para una prueba técnica, documentándolo como decisión.
+   - Revisa minificación/ProGuard, Hermes y el tamaño del APK; propón si conviene activar algo y por qué, sin agregar dependencias.
+   - Confirma que el nombre de la app y el ícono son coherentes, sin cambiar el package com.minishop.
+4. Dame los pasos para probar con el APK de release el estado de error con modo avión (en debug no se puede porque el modo avión corta la conexión con Metro) y el botón Reintentar.
+5. Borrador de la sección Troubleshooting del README con los problemas reales que tuvimos: Metro en otro puerto o colgado, pantalla negra por instancia de React rota (adb shell am force-stop com.minishop), ejecutar Metro desde mobile/ y no desde la raíz, error viejo de TransformError tras ediciones, modo avión en debug, y el WARN de ReactNativeFeatureFlags. Guárdalo en docs/troubleshooting.md.
+
+Primero el plan y tus preguntas. No hagas commit. Al terminar: typecheck, lint, test con número de pruebas y suites, ruta y tamaño del APK, y la lista de qué revisar en el emulador.
+```
+- **Por qué lo escribí así:**
+  - **"No desactivar el escalado de fuente en toda la app":** es el atajo más común (`allowFontScaling={false}` global) y perjudica la accesibilidad.
+  - **APK de release:** que el evaluador instale la app sin compilar nada, y poder probar el estado de error sin depender de Metro.
+- **Antecedente:** intenté probar el estado de error con modo avión en debug y la app no arrancó ("Unable to load script"), porque el modo avión también corta la conexión con Metro. Por eso la prueba se movió al APK de release.
+- **Preguntas de la IA y mis respuestas:**
+  - **Tope de fuente en la tarjeta:** 1.3 (cubre el ajuste "Más grande" de Android antes de la 14). Solo en la tarjeta; detalle, carrito y checkout escalan sin límite.
+  - **APK:** R8 + `shrinkResources` con **un solo APK universal**, para que el evaluador no tenga que elegir arquitectura.
+  - **Marca:** elegí **"MiniShop"** en todos lados (el diseño decía "Mi Surtido"), para que coincida con el repo, el package y el launcher. Pedí buscar todas las apariciones antes de cambiarlas.
+  - **Tarjeta a 2.0:** la IA descubrió que `maxFontSizeMultiplier` no limita el interlineado en RN 0.87/Fabric. Elegí escalar a mano solo en la tarjeta.
+- **Condiciones de tiempo que agregué al aprobar:** máximo 2 intentos para resolver un crash de R8 (si no, desactivarlo y documentarlo); capturas de fuente solo de listado y checkout; dejar el emulador restaurado.
+- **Resultado:**
+  - **Header del listado medido con `onLayout`** en lugar de alto fijo; `getItemLayout` usa esa medida y sigue exacto.
+  - **Tarjeta con alto calculado** según la escala de fuente (350 a 1.0, 380 desde 1.3), escalando sus textos con `allowFontScaling={false}` y tamaño del token × min(escala, 1.3) (`typography.ts`, prop `fixedFontScale`).
+  - **Altos mínimos en lugar de fijos** en botones, badges, chips, buscador, campos, header y barras inferiores (a 1.0 miden igual). Subtotal y total del carrito bajan de línea si no caben.
+  - **APK de release:** 78.0 MB → **72.6 MB con R8** (el código Java/Kotlin bajó de 17 a 3.2 MB; ~62 MB son librerías nativas de 4 arquitecturas). Bundle de Hermes en bytecode. Recorrido completo en release sin errores en logcat.
+  - **Marca "MiniShop"** en header, prueba del checkout, comentario de `tokens.css` y `<title>` de la web. Ícono adaptativo vectorial con variante monocromática.
+  - `docs/troubleshooting.md` y 6 capturas en `docs/evidencia/fuente/`.
+  - **153 pruebas en 24 suites.** Typecheck y lint en verde.
+- **Hallazgos al probar:**
+  - **Crash de R8:** al cambiar el tamaño de fuente con la app abierta, Android recrea la Activity y la app se cerraba ("Screen fragments should never be restored"), porque R8 renombraba las clases de `react-native-screens`. Se resolvió **al primer intento** con una regla `-keepnames` en `proguard-rules.pro`, verificada en el archivo de mapeo.
+  - **`maxFontSizeMultiplier` no limita el `lineHeight`** en RN 0.87 en Android: medido con uiautomator, a 2.0 el título y el botón "Agregar" se recortaban.
+- **Corrección manual que pedí:** durante el error de red el contador decía "0 productos". Pedí ocultarlo en los estados de error y de carga.
+- **Verificación propia:** estado de error con modo avión usando el APK de release: aparece "Reintentar" y, al volver la red, carga el listado. Revisé el ícono en el launcher.
+- **Commit:** `feat(android): soporta fuente agrandada, APK de release con R8 y marca MiniShop (P09)`
+
+---
+
 <!-- Plantilla
 ## PXX · Título
 - **Prompt:**

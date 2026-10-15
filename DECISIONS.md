@@ -231,6 +231,33 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 - **Navegación final:** `reset` a `[catálogo, confirmación]` reutilizando la ruta existente del catálogo (no se vuelve a montar y conserva búsqueda, filtro y scroll); atrás desde la confirmación nunca regresa al checkout.
 - **Propuso:** la IA; lo aprobé.
 
+## D40 · APK de release firmado con el keystore de debug, con R8
+- **Contexto:** la plantilla de React Native firma `release` con `debug.keystore`, que es una clave pública.
+- **Decisión:** se mantiene. El APK es para instalarlo con `adb` o descargándolo, no para Play Store.
+- **Por qué:** cualquier evaluador lo instala sin configurar nada, y reemplaza la versión de debug sin desinstalarla (misma firma).
+- **Riesgo:** no sirve para publicar, porque cualquiera podría firmar una "actualización". En producción: keystore propio fuera del repo, con contraseñas en `~/.gradle/gradle.properties` o en el CI, o Play App Signing.
+- **También en release:** R8 y `shrinkResources` activados: el APK pasa de 78.0 a 72.6 MB (el código Java/Kotlin de 17 a 3.2 MB). Se agregó una regla `-keepnames` para los fragments de `react-native-screens`: sin ella, la app truena cuando Android recrea la Activity (se encontró al cambiar el tamaño de fuente con la app abierta).
+- **Alternativa no aplicada:** APKs por arquitectura (el de arm64 pesaría ~25 MB), pero habría que elegir qué archivo instalar.
+- **Propuso:** la IA. Aprobé R8 con un límite de 2 intentos para resolver crashes; se resolvió al primero.
+
+## D41 · Fuente del sistema agrandada sin perder `getItemLayout` exacto (cierra el riesgo de D34)
+- **Decisión:**
+  - El header del listado se mide con `onLayout` en lugar de tener alto fijo.
+  - La tarjeta tiene un alto calculado según la escala de fuente: 350 a 1.0 y 380 desde 1.3. Su texto escala hasta 1.3 como máximo, calculado por la propia tarjeta (`allowFontScaling={false}` y tamaño del token × escala).
+  - El resto de la app escala sin límite, con altos mínimos en lugar de altos fijos donde hay texto.
+- **Por qué:** `getItemLayout` sigue exacto porque cada tarjeta tiene un alto explícito igual al que reporta. La tarjeta mide 158 dp de ancho y funciona como vista previa: el texto completo, sin límite de escala, se lee en el detalle.
+- **Hallazgo:** en RN 0.87 en Android, `maxFontSizeMultiplier` limita el tamaño de la fuente pero no el interlineado. Medido con uiautomator: a 2.0 el título y el botón "Agregar" se recortaban.
+- **Alternativa descartada:** `allowFontScaling={false}` en toda la app (rompe la accesibilidad).
+- **Propuso:** la IA. El tope de 1.3 y la escala manual los elegí yo.
+
+## D42 · La marca es "MiniShop"; ícono adaptativo
+- **Contexto:** el diseño decía "Mi Surtido", pero el repo, el package (`com.minishop`) y el launcher ya decían "MiniShop".
+- **Decisión:** "MiniShop" en el launcher, el header y el `<title>` de la web. Ícono adaptativo vectorial (la casa de Lucide sobre `--color-primary`), con variante monocromática para Android 13+.
+- **Excepción:** el color está escrito en `colors.xml`, porque los recursos de Android no pueden leer `tokens.css`.
+- **Limitación:** en API 24 y 25 se quedan los PNG de la plantilla.
+- **Sin cambios:** `design/reference/` se conserva como la exportación original del diseño.
+- **Propuso:** yo. Es una de las pocas decisiones en las que me aparto del diseño, y fue por coherencia de marca.
+
 ---
 
 <!-- Plantilla para nuevas decisiones
