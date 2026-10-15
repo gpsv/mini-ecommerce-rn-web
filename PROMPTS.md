@@ -213,6 +213,46 @@ Primero el plan con versiones exactas. No hagas commit.
 
 ---
 
+## P07 · Navegación, listado y detalle en móvil
+- **Herramienta:** Claude Code, Plan mode.
+- **Prompt (resumen; texto completo en el historial de la sesión):**
+```
+P07: navegación, listado y detalle de mobile. Sigue CLAUDE.md y DECISIONS.md, y el diseño de design/reference (listado, cargando, error, vacío, detalle, agregado).
+Native stack tipado, header propio con botón de carrito y badge. Listado en FlatList de 2 columnas con paginación del lado del cliente sobre la caché, filtro por categoría y búsqueda con debounce. Detalle que lea el producto de la caché sin otra petición. Estados de cargando (skeleton), error con Reintentar y vacío. Pruebas de los hooks y de la tarjeta.
+Primero el plan. No hagas commit.
+```
+- **Prompt de aprobación del plan (textual):**
+```
+Apruebo el plan completo y todos los puntos ⚠️:
+- Tipos de navegación en shared/navigation (respeta la regla de dependencias).
+- useQueryState en el detalle para solo leer la caché, con la prueba de fetch = 1 llamada.
+- Header dentro de la lista con alto fijo de 148 para getItemLayout exacto.
+- Ancho de tarjeta con useWindowDimensions.
+- Pie "Cargando más" mientras hasMore, sin espera falsa.
+- Colores del snackbar con tokens existentes (bg-text, text-primary-soft, shadow-card) y sin sombra en el header.
+Procede. No hagas commit. Al terminar: typecheck, lint, test con número de pruebas, y cómo verifico yo en React Native DevTools que /products se llama una sola vez y que el detalle no hace otra petición.
+```
+- **Por qué lo escribí así:** el requisito "evitar llamadas innecesarias" no se cumple solo con decirlo, así que pedí **una prueba automatizada** (fetch = 1 llamada) **y** las instrucciones para comprobarlo yo en DevTools. Además, revisé uno por uno los puntos que la IA marcó con ⚠️ antes de aprobar.
+- **Resultado:**
+  - **Navegación:** native stack tipado (`shared/navigation/types.ts`), `AppHeader` propio y `CartHeaderButton` en `features/cart`. Carrito y checkout quedaron como pantallas temporales para P08.
+  - **Listado:** `useProductListing` (query, categorías derivadas, filtro con `useMemo`, debounce de 300 ms) y `usePaginatedProducts` (genérico, 8 por página, se reinicia sin `useEffect`). `FlatList` de 2 columnas con `getItemLayout`, `initialNumToRender` 4, `windowSize` 5 y `removeClippedSubviews` solo en Android.
+  - **Detalle:** `useQueryState` lee la caché; `getProductById` queda con `skip` y solo corre como respaldo (por ejemplo, un id que no está en la caché). Tiene estados de cargando, error con Reintentar y `notFound`; "Agregado ✓" 1.5 s y snackbar de 3 s.
+  - **`core/`:** `hasApiErrorCode()`, para que la web no repita ese código.
+  - **130 pruebas en 20 suites** (11 nuevas). Typecheck y lint en verde. El bundle de release de Android compila.
+- **Decisiones de la IA que revisé y acepté:** `@react-navigation` en `transformIgnorePatterns` (publica ESM); StatusBar `light-content`; bordes con opacidad de tokens (criterio de D31); "Limpiar búsqueda" también regresa a "Todas", porque el mensaje vacío menciona la categoría; la tarjeta no muestra confirmación al agregar (el diseño no la define, la señal es el badge); "Volver al catálogo" usa `popToTop`.
+- **Análisis / observaciones:**
+  - Se eliminó `ComponentGallery.tsx`: era una herramienta temporal de P06 para la validación visual, ya reemplazada por las pantallas reales. Aprobé el borrado de forma manual (no di permiso general para `git rm`).
+  - Al abrir DevTools apareció un `TransformError` en `ProductCard.tsx`. **Era un error viejo:** Metro compiló el archivo mientras la IA lo escribía. Limpié la consola, recargué con `r` y no volvió a aparecer.
+  - Metro muestra un `WARN` de `ReactNativeFeatureFlags` que es interno de RN 0.87 y no viene del código del proyecto.
+  - Las pruebas de Jest muestran `console.warn` de Uniwind porque en Jest no se compila el CSS. No afecta los resultados.
+- **Verificación propia (emulador Android API 35 + React Native DevTools, pestaña Network):**
+  - Al arrancar: **1 request**, `GET /products` con 200.
+  - Después de abrir varios detalles, cambiar de categoría, buscar y limpiar, hacer scroll hasta el final y agregar 9 productos: **sigue en 1 request**. Nunca aparece `/products/:id`.
+  - Captura de evidencia: `docs/evidencia/network-1-request.png`.
+- **Commit:** `feat(mobile): agrega navegación, listado y detalle con caché única de productos (P07)`
+
+---
+
 <!-- Plantilla
 ## PXX · Título
 - **Prompt:**

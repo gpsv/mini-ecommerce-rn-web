@@ -183,6 +183,30 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 - **Diferencias visuales aceptadas:** el skeleton pulsa la opacidad en lugar del degradado (evita otra librería) y el `TextField` no tiene anillo de foco de 3 px.
 - **Nota técnica:** Uniwind solo expone a JS los tokens que aparecen en algún `className`; un token usado solo desde JS debe declararse en `@theme static`.
 
+## D32 · El detalle lee el producto de la caché del listado
+- **Contexto:** la API tiene `GET /products/:id`, pero el listado ya descargó todos los productos con `GET /products`.
+- **Decisión:** el detalle usa `getProducts.useQueryState` con `selectFromResult` para leer el producto de la caché, **sin suscribirse ni volver a pedirlo**. `getProductById` queda con `skip` y solo corre como respaldo cuando el producto no está en la caché (por ejemplo, un id inexistente, que termina en `notFound`).
+- **Por qué:** cumple "evitar llamadas innecesarias" y la navegación al detalle es instantánea.
+- **Evidencia:** una prueba automatizada verifica que `fetch` se llama 1 vez, y en DevTools se ve 1 sola request después de navegar por toda la app.
+- **Propuso:** la IA en el plan; lo aprobé y pedí la prueba.
+
+## D33 · Paginación del lado del cliente sobre la caché
+- **Contexto:** la API no pagina (devuelve los 20 productos de una vez), pero el reto pide pensar en optimización y lazy load.
+- **Decisión:** `usePaginatedProducts` (genérico) muestra 8 productos por página y agrega más al llegar al final. Se reinicia cuando cambia la lista filtrada. El pie "Cargando más" se muestra mientras `hasMore`, sin espera artificial.
+- **Por qué:** limita lo que se renderiza al inicio y deja lista la estructura si la API llegara a paginar: solo cambiaría la fuente de datos, no la pantalla.
+- **Propuso:** yo (lazy load en los requisitos iniciales); la IA lo implementó como hook genérico.
+
+## D34 · `FlatList` con `getItemLayout` y header de alto fijo
+- **Decisión:** 2 columnas, ancho de tarjeta con `useWindowDimensions`, `getItemLayout` por fila (362) con el header (buscador y chips) **dentro** de la lista y con alto fijo de 148. Además `initialNumToRender` 4, `windowSize` 5 y `removeClippedSubviews` solo en Android. `ProductCard` con `React.memo`.
+- **Por qué:** con `getItemLayout`, la lista no mide cada fila al hacer scroll. Al poner el header dentro de la lista, todo hace scroll junto, como en el diseño.
+- **Riesgo aceptado:** con la fuente del sistema muy agrandada, el header de 148 podría recortar texto. Se revisa en P09.
+- **Propuso:** la IA; aprobé el alto fijo después de revisarlo.
+
+## D35 · Tipos de navegación en `shared/navigation`
+- **Decisión:** `RootParamList` vive en `shared/navigation/types.ts`, no en `app/`.
+- **Por qué:** las pantallas de `features/` necesitan esos tipos, y la regla de dependencias (`features → shared → core`) no permite que importen de `app/`.
+- **Propuso:** la IA lo marcó con ⚠️; lo aprobé.
+
 ---
 
 <!-- Plantilla para nuevas decisiones

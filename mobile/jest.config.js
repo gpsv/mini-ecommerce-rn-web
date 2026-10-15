@@ -14,8 +14,8 @@ module.exports = {
   modulePaths: ['<rootDir>/node_modules'],
   // Preset pattern plus packages whose react-native export condition is not CommonJS:
   // uniwind ships TypeScript source; immer and react-redux (used by RTK) ship ESM;
-  // react-native-svg and async-storage's Jest mock ship ESM.
+  // react-native-svg, async-storage's Jest mock and @react-navigation ship ESM.
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-native-async-storage|uniwind|immer|react-redux|react-native-svg)/)',
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-native-async-storage|@react-navigation|uniwind|immer|react-redux|react-native-svg)/)',
   ],
 };
