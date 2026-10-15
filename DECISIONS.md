@@ -167,6 +167,22 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 - **Lección:** este bug lo encontraron las pruebas de una regla pura, no la UI. Es la razón de escribir el dominio con pruebas antes de las pantallas.
 - **Propuso:** la IA lo detectó con las pruebas y lo corrigió.
 
+## D29 · AsyncStorage 3.1.1, la versión mantenida
+- **Contexto:** la 3.1.1 (mantenida, soporte declarado para RN ≥ 0.76) parecía exigir un repositorio Maven local en `android/build.gradle`; la 2.2.0 no tocaba Gradle, pero no documenta compatibilidad con RN 0.87 y Nueva Arquitectura.
+- **Decisión:** 3.1.1, con `createAsyncStorage('minishop')` para un espacio de almacenamiento propio de la app.
+- **Hallazgo al implementar:** la IA comprobó que el artefacto nativo ya está en Maven Central (respuesta 200), así que la documentación estaba desactualizada y no hizo falta tocar Gradle.
+- **Por qué:** prefiero una configuración nativa explícita a una dependencia con compatibilidad no documentada.
+
+## D30 · React Native Testing Library 13.3.3
+- **Decisión:** 13.3.3, que usa el `react-test-renderer` 19.2.3 ya incluido en la plantilla. La 14 cambia a otro renderer (fuera de la tabla aprobada) y a una API de render asíncrono.
+- **Criterio:** el mismo que en D27: si hay una versión probada que cubre lo necesario, no se adopta la más nueva.
+
+## D31 · Colores del diseño que no son tokens
+- **Contexto:** algunos estados del diseño usan colores que no existen en `tokens.css` (presionado de secondary, fondo de stepper deshabilitado, cargando de primary).
+- **Decisión:** resolverlos con el token más cercano u opacidad sobre un token (`opacity-80`, `primary/70`, `bg-disabled`), sin agregar colores sueltos. `useTokenColor(token, opacity?)` entrega el color del token en JS para props como `android_ripple`.
+- **Diferencias visuales aceptadas:** el skeleton pulsa la opacidad en lugar del degradado (evita otra librería) y el `TextField` no tiene anillo de foco de 3 px.
+- **Nota técnica:** Uniwind solo expone a JS los tokens que aparecen en algún `className`; un token usado solo desde JS debe declararse en `@theme static`.
+
 ---
 
 <!-- Plantilla para nuevas decisiones

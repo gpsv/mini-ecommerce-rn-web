@@ -185,6 +185,34 @@ Primero el plan con la lista de casos de prueba. No hagas commit.
 
 ---
 
+## P06 · Dependencias nativas, store y componentes atómicos de móvil
+- **Herramienta:** Claude Code, Plan mode.
+- **Prompt (resumen):**
+```
+P06: dependencias nativas, store y componentes atómicos de mobile. Sigue CLAUDE.md (secciones 7, 8 y 9) y DECISIONS.md.
+1. Dependencias nativas, todas juntas para recompilar Android una sola vez (versión exacta, compatibles con RN 0.87.1 y Nueva Arquitectura; verifica peerDependencies antes): react-native-svg, lucide-react-native, async-storage, react-navigation (native + native-stack), react-native-screens, y RNTL compatible con React 19.2.
+2. Store: src/app/store.ts con createAppStore(asyncStorageAdapter, { isDevelopment: __DEV__ }), adaptador de AsyncStorage y hooks tipados. Provider + SafeAreaProvider.
+3. Componentes según design/reference/14-Componentes.html, 15-Specs.html y la captura de la hoja de componentes: atoms (Button, AppText, Price, Badge, IconButton, Spinner, ProductImage, TextField) y molecules (QuantityStepper con eliminar en cantidad 1, SearchBar, CategoryChips, ErrorState, EmptyState, ProductCardSkeleton).
+4. Pantalla temporal ComponentGallery para comparar con el diseño.
+5. Pruebas RNTL: QuantityStepper, ErrorState y Button.
+Primero el plan con versiones exactas. No hagas commit.
+```
+- **Por qué lo escribí así:** todas las dependencias nativas en un solo prompt para **recompilar Android una sola vez**. Y una galería temporal para validar visualmente cada componente contra el diseño **antes** de armar pantallas.
+- **Preguntas de la IA y mis respuestas:**
+  - AsyncStorage: 3.1.1 mantenida vs 2.2.0 sin cambios en Gradle → elegí 3.1.1 (D29).
+  - RNTL: 13.3.3 vs 14.0.1 → 13.3.3 (D30).
+- **Resultado:** 8 atoms y 6 molecules; store con AsyncStorage conectado; **119 pruebas en 16 archivos** (10 nuevas de RNTL). Bundles de Metro para Android **y para iOS** compilan.
+- **Hallazgos de la IA durante la implementación:**
+  - La documentación de AsyncStorage 3 estaba desactualizada: el artefacto ya está en Maven Central, sin tocar Gradle (D29).
+  - react-native-screens 4.28 cambió la configuración de `MainActivity` (`RNScreensFragmentFactory`); la aplicó según su README actual.
+  - Lucide publica `.mjs` que Jest no transforma: se mapeó a su build CommonJS.
+  - Los colores del diseño que no son tokens se resolvieron con tokens y opacidades (D31).
+- **Pendiente para P07:** el diseño de ErrorState y EmptyState difiere entre la hoja de componentes (botón md, título 16) y las pantallas 04 y 05 (botón lg, título 18).
+- **Verificación propia:** recompilé Android y comparé la galería con `design/screens/hoja-de-componentes.png`.
+- **Commit:** `feat(mobile): agrega componentes atómicos, store y dependencias nativas (P06)`
+
+---
+
 <!-- Plantilla
 ## PXX · Título
 - **Prompt:**
