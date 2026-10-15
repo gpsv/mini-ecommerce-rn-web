@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A new push to the same branch cancels the run that is still in progress.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# No Android build here: Gradle + NDK + Hermes takes many minutes per run, and the
+# release APK is built locally and attached to the GitHub Release (D40). The code
+# that both apps share (core/) is typechecked, linted and tested in these jobs.
+#
+# npm ci runs with the npm bundled with Node 22 (10.x): web's lockfile installs
+# fine with it (D45). Each app has its own lockfile and node_modules (no workspaces).
+
+jobs:
+  mobile:
+    name: Mobile (typecheck, lint, test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      # Also lints ../core with the core/ architecture rules (.eslintrc.core.js).
+      - run: npm run lint
+      - run: npm test -- --ci
+
+  web:
+    name: Web (typecheck, lint, test, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build

@@ -448,6 +448,55 @@ Revisa ambos a 1440, 1280, 1024, 800 y 375 px. No hagas commit. Al terminar: typ
 
 ---
 
+## P11 · Calidad automatizada: ESLint con reglas de arquitectura y CI
+- **Herramienta:** Claude Code, Plan mode.
+- **Prompt:**
+```
+P11: calidad automatizada. Sigue CLAUDE.md y DECISIONS.md.
+
+1. ESLint (mobile y web, sin agregar plugins nuevos si las reglas ya existen en lo instalado):
+   - Error en any explícito (@typescript-eslint/no-explicit-any) y en @ts-ignore/@ts-nocheck (@typescript-eslint/ban-ts-comment; permite @ts-expect-error solo con descripción).
+   - Reglas de arquitectura con no-restricted-imports (o la regla equivalente ya instalada):
+     - core/ no puede importar react-native, react-dom, react-router, react-navigation ni nada de mobile/ o web/.
+     - features/ no puede importar de app/.
+     - Un feature no importa archivos internos de otro feature, solo su index.ts.
+   - Corrige el aviso "React version was set to detect" del lint sobre core/.
+   - Si aparecen violaciones, muéstramelas antes de corregirlas.
+2. CI con GitHub Actions (.github/workflows/ci.yml), en push y pull_request a main:
+   - Node desde .nvmrc, caché de npm, npm ci en mobile/ y web/ (con el npm que trae Node 22; el lockfile de web ya funciona con npm 10, D45).
+   - typecheck, lint, test (mobile y web) y build de producción de web.
+   - Sin build de Android en CI (tarda mucho y el APK va en el Release); explícalo en un comentario.
+3. Revisa el aviso de seguridad de braces de npm audit (P08): dime de dónde viene, si llega al bundle de la app y si conviene actuar.
+4. Agrega el badge del CI al README (solo la línea del badge; el README completo lo hacemos en P12).
+
+Primero el plan y tus preguntas. No hagas commit. Al terminar: typecheck, lint y test con números, y cómo verifico que el CI corre en GitHub.
+```
+- **Por qué lo escribí así:** hasta aquí, las reglas de arquitectura ("`core/` no conoce la plataforma", "features → shared → core") solo estaban escritas en `CLAUDE.md`. Con ESLint **la máquina las hace cumplir**, y con el CI se revisan en cada push.
+- **Preguntas de la IA y mis respuestas:**
+  - **Badge:** crear `README.md` en la raíz (no existía); el contenido completo llega en P12.
+  - **Reglas extra que no pedí:** aprobé las dos: globals prohibidos en `core/` (`window`, `document`, `__DEV__`) y `shared/` sin importar de `features/` ni `app/`. Con ellas, **todas** las reglas de arquitectura de `CLAUDE.md` quedan verificadas por ESLint.
+  - **CI:** dos jobs en paralelo (mobile y web): más rápido y se ve cuál app falló.
+- **Ajuste al aprobar:** pedí **no** simular el CI en local borrando `node_modules` (en mobile tarda varios minutos y podía afectar el entorno de Android antes del APK final). La prueba real es el CI en GitHub.
+- **Resultado:**
+  - `mobile/.eslintrc.js`: sin `any`, sin `@ts-ignore`/`@ts-nocheck` (`@ts-expect-error` solo con descripción), features sin importar `app/` ni internos de otro feature, `shared/` sin importar `features/` ni `app/`. Reglas generadas desde una lista `FEATURES`.
+  - `mobile/.eslintrc.core.js` (nuevo, porque ESLint 8 no acepta `..` en los overrides): `core/` sin React Native, react-dom, React Router, React Navigation, `mobile/`, `web/`, `window`, `document` ni `__DEV__`.
+  - `web/eslint.config.js`: las mismas reglas con la misma lista `FEATURES`.
+  - **Aviso de React resuelto:** el plugin buscaba `react` desde `core/`, que no tiene `node_modules`; ahora la versión se lee de la instalada en mobile.
+  - `.github/workflows/ci.yml`: jobs `mobile` (typecheck, lint, test) y `web` (typecheck, lint, test, build), Node desde `.nvmrc`, caché de npm, `npm ci`, `permissions: contents: read` y `concurrency`.
+  - `README.md` con el título y el badge.
+  - **Violaciones en el código existente: ninguna.**
+  - Jest 26 suites / 159 pruebas; Vitest 6 archivos / 17 pruebas; build de web en verde.
+- **Prueba de que las reglas funcionan:** la IA creó archivos temporales con 10 violaciones distintas y **cada una falló con su mensaje** (por ejemplo, `core/ no lee el entorno: recibe isDevelopment en createAppStore (D26)`); lo permitido (`../../catalog`, `@core/...`, `@ts-expect-error` con descripción) no dio error. Después los borró.
+- **Análisis de `braces` (GHSA-vfj7-8cjw-p6xm, alta, DoS por glob anidado):**
+  - Llega por `jest → micromatch` (desarrollo) y por `uniwind → metro → micromatch`. **La IA corrigió su propio plan:** había dicho que `--omit=dev` saldría vacío y no fue así.
+  - **No llega al APK:** revisó el sourcemap del bundle de release (3,136 módulos) y no aparecen `braces`, `micromatch`, `metro` ni `jest`. Solo corre en Node, durante el desarrollo.
+  - **No hay versión corregida publicada**, y `npm audit fix --force` bajaría Jest a 25 y la CLI de RN a 13 (rompe la plantilla). Decisión: no actuar y revisarlo cuando salga una versión corregida (D52).
+  - Web tiene 0 vulnerabilidades.
+- **Verificación propia:** el CI en GitHub (pestaña Actions) con los dos jobs en verde y el badge en "passing".
+- **Commit:** `ci: agrega reglas de arquitectura en ESLint y GitHub Actions para mobile y web (P11)`
+
+---
+
 <!-- Plantilla
 ## PXX · Título
 - **Prompt:**

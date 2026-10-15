@@ -309,6 +309,32 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 - **Por qué:** el usuario no debe ver el botón de confirmar antes de llenar sus datos, y el orden de Tab debe seguir el orden visual (por eso no se usa CSS `order`).
 - **Propuso:** yo, al revisar la web en Chrome; la IA encontró los otros rangos afectados y la causa (`order-first`).
 
+## D50 · Las reglas de arquitectura las hace cumplir ESLint
+- **Decisión:** `no-restricted-imports` y `no-restricted-globals` codifican las reglas de `CLAUDE.md` §4:
+  - `core/` no importa React Native, react-dom, React Router, React Navigation, `mobile/` ni `web/`, y no usa `window`, `document` ni `__DEV__`.
+  - Un feature no importa de `app/` ni archivos internos de otro feature (solo su `index.ts`).
+  - `shared/` no importa de `features/` ni de `app/`.
+  - Sin `any` explícito; sin `@ts-ignore`/`@ts-nocheck`; `@ts-expect-error` solo con descripción.
+- **Por qué:** una regla escrita se puede olvidar; una regla en el lint falla en el CI. Los mensajes de error explican la regla y citan la decisión (por ejemplo, D26).
+- **Evidencia:** 10 archivos con violaciones a propósito fallaron con su mensaje; los imports permitidos no dieron error.
+- **Sin plugins nuevos:** se usaron reglas que ya traían los presets instalados.
+- **Propuso:** yo; la IA agregó (con mi aprobación) los globals de `core/` y la regla de `shared/`.
+
+## D51 · CI en GitHub Actions sin build de Android
+- **Decisión:** dos jobs en paralelo en cada push y PR a `main`: `mobile` (typecheck, lint, Jest) y `web` (typecheck, lint, Vitest, build). Node desde `.nvmrc`, `npm ci` con caché, `permissions: contents: read` y `concurrency`.
+- **Por qué no se compila Android:** Gradle, NDK y Hermes tardan mucho y gastan minutos de CI; el APK de release se genera localmente y se adjunta al Release (D40), y la lógica compartida ya se prueba en el CI.
+- **Alternativa:** un job de Android con caché de Gradle, o EAS/Bitrise para builds firmados, si el proyecto fuera a producción.
+- **Propuso:** yo; los dos jobs en paralelo, la IA.
+
+## D52 · Aviso de `braces` en mobile: no se actúa
+- **Contexto:** `npm audit` en mobile reporta GHSA-vfj7-8cjw-p6xm (alta, DoS por patrones glob anidados) en `braces <=3.0.3`, vía `micromatch` (Jest y Metro, este último por `uniwind`).
+- **Decisión:** no actuar.
+- **Por qué:**
+  - No llega al APK: el sourcemap del bundle de release (3,136 módulos) no incluye `braces`, `micromatch`, `metro` ni `jest`. Solo corre en Node durante el desarrollo, con patrones que define quien configura el proyecto.
+  - No hay versión corregida publicada, y `npm audit fix --force` bajaría Jest a 25 y la CLI de React Native a 13, rompiendo la plantilla (D20).
+- **Seguimiento:** revisar cuando salga `braces` 3.0.4 o React Native suba Metro. Web tiene 0 vulnerabilidades.
+- **Propuso:** la IA hizo el análisis; la decisión es mía.
+
 ---
 
 <!-- Plantilla para nuevas decisiones
