@@ -16,11 +16,19 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* core/ resolution: core/ has no node_modules, so its imports map to this app */
+    "paths": {
+      "@core/*": ["../core/*"],
+      "zod": ["./node_modules/zod"]
+    },
+
     /* Linting */
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", "../core"],
+  "exclude": ["../core/**/__tests__"]
 }

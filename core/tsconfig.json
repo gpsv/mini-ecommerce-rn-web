@@ -1,0 +1,23 @@
+{
+  // Editor-only config: no app extends or builds from this file.
+  // Each app type-checks core/ with its own tsconfig (mobile/tsconfig.json, web/tsconfig.app.json).
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["ES2022"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "skipLibCheck": true,
+    "types": ["jest"],
+    "typeRoots": ["../mobile/node_modules/@types"],
+    // core/ has no node_modules; the editor borrows mobile's copies.
+    "paths": {
+      "zod": ["../mobile/node_modules/zod"]
+    }
+  },
+  "include": ["**/*.ts"]
+}

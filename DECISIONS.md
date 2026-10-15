@@ -19,6 +19,7 @@ Cada decisión indica el contexto, la opción elegida, las alternativas consider
   - Repositorios separados: duplicación de lógica y riesgo de desalinear reglas.
 - **Sin npm workspaces:** el hoisting de dependencias rompe el autolinking de React Native CLI. `core/` se resuelve con `watchFolders`/`nodeModulesPaths` en Metro, alias y `dedupe` en Vite, y `paths` en TypeScript.
 - **Plan B documentado:** si la resolución de `core/` hubiera bloqueado más de una hora, copiarlo dentro de cada app.
+- **✅ Validado en P02:** la misma función de `core/` se ejecuta en Android (Metro + Hermes) y en web (Vite), sin workspaces. No fue necesario el plan B. Detalle en `PROMPTS.md`, P02.
 - **Propuso:** yo.
 
 ## D03 · Redux Toolkit + RTK Query
@@ -107,6 +108,17 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 ## D18 · Configuración compartida de TypeScript y dependencias de soporte
 - **Decisión:** `strict: true` en ambas apps, ambas incluyen `../core`; en `core/` se usa `import type` y no `enum`. Zod se declara en las dos apps con la misma versión exacta. Se aprueban `@react-navigation/*`, `react-native-screens`, `babel-plugin-module-resolver`, `@tailwindcss/vite` y una versión de React Native Testing Library compatible con React 19.
 - **Por qué:** la IA detectó que Zod solo existía como dependencia transitiva de otro paquete y que web no era estricto ni revisaba `core/`.
+
+## D19 · Plugin de Babel para que Metro empaquete Zod 4
+- **Contexto:** al generar el bundle de Metro en P02, la IA encontró que Zod 4 publica código con `export * as ...` y que `@react-native/babel-preset@0.87.1` no lo transforma. Jest no lo detectaba porque transforma a CommonJS; solo fallaba el bundle real.
+- **Evidencia:** el error se reproduce con el `babel.config.js` original de la plantilla, así que no lo causa nuestra configuración.
+- **Decisión:** `@babel/plugin-transform-export-namespace-from@7.29.7` (versión exacta, la misma que ya llega por `@babel/preset-env`) en los plugins de Babel de mobile.
+- **Lección:** pasar las pruebas no basta; hay que verificar el bundle real de la plataforma.
+- **Propuso:** la IA, con evidencia; yo lo aprobé.
+
+## D20 · `npm audit` de mobile como deuda conocida
+- **Contexto:** `npm audit` reporta vulnerabilidades en mobile, todas en dependencias de la plantilla de React Native CLI (árbol de Jest y herramientas de desarrollo). Web reporta 0.
+- **Decisión:** no forzar actualizaciones (`npm audit fix --force` rompería la compatibilidad de la plantilla). Ninguna viene de las dependencias que agregué.
 
 ---
 

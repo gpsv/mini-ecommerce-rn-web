@@ -41,7 +41,7 @@ Autenticación, perfil, historial de órdenes, pagos reales, direcciones de env�
 | Íconos | `react-native-svg` + `lucide-react-native` | `lucide-react` |
 | Pruebas | Jest + React Native Testing Library (versión compatible con React 19) | (las de `core/` cubren la lógica) |
 
-**Dependencias de soporte aprobadas:** `@react-navigation/native`, `@react-navigation/native-stack`, `react-native-screens`, `react-native-safe-area-context`, `babel-plugin-module-resolver` (alias `@core` en Metro), `@tailwindcss/vite`. **Zod se declara en `mobile/` y en `web/` con la misma versión exacta.**
+**Dependencias de soporte aprobadas:** `@react-navigation/native`, `@react-navigation/native-stack`, `react-native-screens`, `react-native-safe-area-context`, `babel-plugin-module-resolver` (alias `@core` en Metro), `@babel/plugin-transform-export-namespace-from` (Zod 4 en Metro, ver D19), `@tailwindcss/vite`. **Zod se declara en `mobile/` y en `web/` con la misma versión exacta.**
 
 No agregues dependencias fuera de esta tabla sin preguntar y justificar. Nunca instales con `--force` ni `--legacy-peer-deps` sin aprobación.
 

@@ -43,7 +43,57 @@ Luego dime qué parte de CLAUDE.md te parece ambigua o riesgosa para implementar
   - Definí la excepción de colores en JS (D14), la confirmación por plataforma (D15), el alcance de deep links (D16) y la caché por sesión (D17).
   - Actualicé `CLAUDE.md` y `DECISIONS.md` con todo lo anterior antes de pedir el primer plan.
 - **Verificación:** no generó archivos (era el objetivo).
-- **Commit:** `docs: record decisions from AI risk review (P01)`
+- **Commit:** `docs: agrega contexto del proyecto, registro de decisiones y bitácora de prompts (P00-P01)`
+
+---
+
+## P02 · Resolver `core/` compartido en Metro, Vite, TypeScript y Jest
+- **Herramienta:** Claude Code, Plan mode y luego "Ask before edits".
+- **Prompt:**
+```
+Respondí tus preguntas del análisis anterior actualizando CLAUDE.md (secciones 2, 3, 4, 5 y 7) y DECISIONS.md (D11 a D18). Reléelos antes de seguir.
+
+Resumen de mis decisiones:
+- Uniwind: verifica compatibilidad con RN 0.87.1 y si su CSS puede importar ../design/tokens.css. Si no es compatible, detente y dame evidencia y alternativas.
+- Íconos: react-native-svg + lucide-react-native en móvil, lucide-react en web.
+- Dependencias de soporte aprobadas (sección 2). Zod declarado en ambas apps con la misma versión exacta.
+- core/ SÍ puede usar @reduxjs/toolkit/query/react (D11). No acepto la recomendación de generar hooks por app: duplica createApi y complica el store.
+- formatPrice determinista sin Intl (D12).
+
+Ahora haz el P02: configura la resolución de core/ y design/ en ambas apps (Metro con watchFolders, nodeModulesPaths y babel-plugin-module-resolver; Vite con alias y dedupe; tsconfig strict en ambas incluyendo ../core; core/tsconfig.json solo para el editor; Jest de mobile con roots en ../core) y el package.json de la raíz con lint, typecheck y test.
+Como prueba de humo crea solo core/shared/money.ts con toCents, e impórtalo desde App.tsx de mobile y web mostrando toCents(109.95).
+Primero dame el plan con archivos a crear o modificar y por qué. No instales Uniwind todavía; eso es el P03.
+Al terminar corre typecheck en ambas apps y explícame cómo se resuelve un import de "zod" hecho desde un archivo dentro de core/.
+```
+- **Por qué lo escribí así:** compartir `core/` entre React Native CLI y Vite sin workspaces era el mayor riesgo técnico. Lo aislé con una prueba de humo mínima (`toCents`) antes de construir encima, y pedí el plan primero para revisarlo.
+- **Revisión del plan:** lo aprobé con dos condiciones mías: lint de `core/` con límite de 15 minutos (si no, pasa al prompt de calidad) y un `.nvmrc` con Node 22, porque la IA detectó que RN 0.87 pide Node ≥ 22 y yo tenía Node 20.
+- **Resultado:** Metro (`watchFolders`, `nodeModulesPaths`), Babel (alias `@core`), Jest (`roots`, `modulePaths`), Vite (alias, `dedupe`, `server.fs.allow`), `tsconfig` estricto en ambas apps, `core/tsconfig.json` para el editor y `package.json` raíz con `lint`, `typecheck` y `test`.
+- **Análisis:**
+  - Verificó cada herramienta por separado con archivos temporales que luego borró.
+  - Encontró que `vite build` pasa sin `dedupe` pero el dev server falla: no confió solo en el build.
+  - **Hallazgo clave:** el bundle de Metro falla con Zod 4 aunque Jest pase (D19). Lo reprodujo con la plantilla original para demostrar que no era culpa de la configuración y propuso un plugin en lugar de instalarlo sin permiso.
+  - Detectó que la config de ESLint de RN no prohíbe `any` ni `@ts-ignore`, como pide `CLAUDE.md`.
+- **Prompt de seguimiento:**
+```
+Apruebo @babel/plugin-transform-export-namespace-from@7.29.7 exacto como devDependency de mobile, agregado a plugins de babel.config.js. [...] Después de agregarlo, verifica de nuevo con un archivo temporal en core/ que importe zod que el bundle de Metro se genera sin error, y bórralo.
+También aprueba borrar los archivos huérfanos de la plantilla [...]. npm audit: no lo toques; lo documento como deuda conocida. Las reglas de lint para any y @ts-ignore quedan para el prompt de calidad. Al terminar corre typecheck, lint y test otra vez y dame el resultado. No hagas commit.
+```
+- **Decisiones y correcciones mías:**
+  - Aprobé el plugin de Babel con versión exacta y pedí verificarlo con el bundle real (D19).
+  - Pedí borrar los archivos huérfanos de la plantilla.
+  - Decidí no tocar `npm audit` (D20) y dejar las reglas de `any` y `@ts-ignore` para el prompt de calidad.
+  - Le pedí no hacer commit, para revisar los cambios yo antes.
+- **Verificación propia:**
+  - `typecheck`, `lint` y `test` en verde.
+  - Reinicié Metro con `--reset-cache` (cambió la configuración de Babel) y recargué la app.
+  - **Android (emulador, RN 0.87.1 + Hermes):** muestra `toCents(109.95) = 10995`.
+  - **Web (Vite dev server, `localhost:5173`):** muestra `toCents(109.95) = 10995`.
+
+> ### ✅ Hito: `core/` compartido validado en ambas plataformas
+> La misma función de `core/shared/money.ts`, que vive **fuera** de `mobile/` y de `web/`, se ejecuta en Android y en el navegador. Con esto quedó probada la decisión de arquitectura más arriesgada del proyecto (D02): un solo dominio compartido entre React Native CLI y React + Vite, **sin npm workspaces**, resuelto en Metro, Babel, Jest, Vite y TypeScript.
+> A partir de aquí, cualquier regla de negocio que se agregue a `core/` (carrito, validaciones, estado) llega a las dos apps sin duplicar código.
+
+- **Commit:** `feat(core): configura core/ compartido en Metro, Vite, TypeScript y Jest (P02)`
 
 ---
 

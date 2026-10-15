@@ -1,0 +1,9 @@
+{
+  "name": "mini-ecommerce",
+  "private": true,
+  "scripts": {
+    "lint": "npm run lint --prefix mobile && npm run lint --prefix web",
+    "typecheck": "npm run typecheck --prefix mobile && npm run typecheck --prefix web",
+    "test": "npm test --prefix mobile"
+  }
+}
