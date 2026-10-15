@@ -4,7 +4,10 @@
     // core/ has no node_modules: map @core and the packages it imports to this app.
     "paths": {
       "@core/*": ["../core/*"],
-      "zod": ["./node_modules/zod"]
+      "zod": ["./node_modules/zod"],
+      "@reduxjs/toolkit": ["./node_modules/@reduxjs/toolkit"],
+      "@reduxjs/toolkit/*": ["./node_modules/@reduxjs/toolkit/*"],
+      "react-redux": ["./node_modules/react-redux"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "../core/**/*.ts"],

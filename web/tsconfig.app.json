@@ -19,7 +19,10 @@
     /* core/ resolution: core/ has no node_modules, so its imports map to this app */
     "paths": {
       "@core/*": ["../core/*"],
-      "zod": ["./node_modules/zod"]
+      "zod": ["./node_modules/zod"],
+      "@reduxjs/toolkit": ["./node_modules/@reduxjs/toolkit"],
+      "@reduxjs/toolkit/*": ["./node_modules/@reduxjs/toolkit/*"],
+      "react-redux": ["./node_modules/react-redux"]
     },
 
     /* Linting */

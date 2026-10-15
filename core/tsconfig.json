@@ -16,7 +16,10 @@
     "typeRoots": ["../mobile/node_modules/@types"],
     // core/ has no node_modules; the editor borrows mobile's copies.
     "paths": {
-      "zod": ["../mobile/node_modules/zod"]
+      "zod": ["../mobile/node_modules/zod"],
+      "@reduxjs/toolkit": ["../mobile/node_modules/@reduxjs/toolkit"],
+      "@reduxjs/toolkit/*": ["../mobile/node_modules/@reduxjs/toolkit/*"],
+      "react-redux": ["../mobile/node_modules/react-redux"]
     }
   },
   "include": ["**/*.ts"]

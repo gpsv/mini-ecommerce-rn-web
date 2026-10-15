@@ -54,7 +54,7 @@ Repositorio único, **sin npm workspaces** (evita problemas de hoisting con el a
 ├── core/                       Dominio y datos. Sin React Native ni DOM.
 │   ├── catalog/
 │   │   ├── product.schema.ts       ProductSchema, ProductListSchema; type Product = z.infer
-│   │   ├── catalogApi.ts           RTK Query: getProducts (valida con Zod en transformResponse)
+│   │   ├── catalogApi.ts           RTK Query: getProducts (valida con rawResponseSchema, D24) y getProductById
 │   │   └── catalog.selectors.ts    selectCategories, filterProducts (categoría + búsqueda)
 │   ├── cart/
 │   │   ├── cart.schema.ts          CartItemSchema, PersistedCartSchema
@@ -63,10 +63,10 @@ Repositorio único, **sin npm workspaces** (evita problemas de hoisting con el a
 │   │   └── cart.selectors.ts       selectCartItems, selectTotalItems, selectTotalInCents
 │   ├── checkout/
 │   │   ├── checkout.schema.ts      CheckoutContactSchema (nombre, correo, teléfono)
-│   │   └── checkoutSlice.ts        status: idle | processing | confirmed; thunk confirmOrder simulado
+│   │   └── checkoutSlice.ts        status: idle | processing | confirmed; confirmedOrder; thunk confirmOrder simulado
 │   ├── store/
 │   │   ├── baseApi.ts              createApi con baseUrl y tags
-│   │   ├── createAppStore.ts       createAppStore(storageAdapter) → store tipado
+│   │   ├── createAppStore.ts       createAppStore(storage, options) → store tipado (D26)
 │   │   └── cartPersistence.ts      listener middleware: guarda el carrito y lo rehidrata validando con Zod
 │   ├── shared/
 │   │   ├── money.ts                toCents, multiplyCents, sumCents, formatPrice
@@ -122,7 +122,10 @@ Repositorio único, **sin npm workspaces** (evita problemas de hoisting con el a
 - **Confirmación por plataforma:** en móvil, `Alert.alert` nativo encapsulado en el hook `useConfirmRemoveItem`; en web, un componente `ConfirmDialog` propio. No se comparte UI entre plataformas.
 - **Caché por sesión:** "una sola llamada" significa una por sesión de la app. La caché de RTK Query no se persiste; no hay modo offline del catálogo.
 - **Deep links:** no se configura linking en móvil. El fallback `getProductById` existe porque en **web** sí se puede abrir `/product/:id` directamente.
-- **Checkout:** formulario de contacto validado con Zod → resumen → `confirmOrder` simula una espera de ~1.5 s → estado `confirmed` con número de orden → limpia el carrito.
+- **Checkout:** formulario de contacto validado con Zod → resumen → `confirmOrder` simula una espera de ~1.5 s → estado `confirmed` con `confirmedOrder` (`orderNumber` `MS-` + 5 dígitos, `contact`, `totalItems`, `totalInCents`, tomados antes de limpiar) → limpia el carrito. `condition` evita el doble envío y la compra con carrito vacío (D25).
+- **Validación de la API:** `rawResponseSchema` + `catchSchemaFailure` de RTK Query, que devuelven un error controlado; `transformResponse` solo convierte a `CatalogProduct` (D24). `/products/:id` responde `200` con cuerpo vacío si no existe: se trata como `PRODUCT_NOT_FOUND`.
+- **Entorno:** `core/` no usa `__DEV__`, `process.env` ni `import.meta.env`. Cada app pasa `isDevelopment` a `createAppStore` (`__DEV__` en móvil, `import.meta.env.DEV` en web) (D26).
+- **Reglas sin cambios devuelven la misma referencia:** si una regla del carrito no cambia nada, devuelve el mismo arreglo, para no disparar persistencia ni renders de más (D28).
 
 ## 6. Optimización de llamadas (requisito explícito)
 

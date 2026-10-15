@@ -139,6 +139,34 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 - **Decisión:** usarla con versión exacta (sin `^`) para que una actualización no rompa el proyecto. Tailwind 4.3.3 exacto en ambas apps.
 - **Riesgo aceptado:** librería joven; el plan B era NativeWind o `StyleSheet` con tokens en TypeScript.
 
+## D24 · Validar la API con `rawResponseSchema`, no dentro de `transformResponse`
+- **Contexto:** la IA encontró que si un `parse` de Zod falla dentro de `transformResponse`, RTK Query lo trata como error no manejado: escribe `console.error` y la pantalla recibe un error sin estructura. RTK 2.x ya trae validación con schemas (`rawResponseSchema` y `catchSchemaFailure`), compatible con Zod 4.
+- **Decisión:** validar con `rawResponseSchema: ProductListSchema` y devolver un error controlado (`CUSTOM_ERROR`, "Respuesta inválida del servidor") con `catchSchemaFailure`. `transformResponse` solo convierte a `CatalogProduct`. Una prueba confirma que no aparece el `console.error` de RTK.
+- **Cambio sobre `CLAUDE.md`:** el plan original decía "valida en `transformResponse`"; lo actualicé con la razón técnica.
+- **Propuso:** la IA; lo aprobé.
+
+## D25 · La orden confirmada guarda su propio resumen
+- **Contexto:** la IA leyó el tablero de compra confirmada en `design/reference/` y detectó que muestra nombre, correo, número de orden, cantidad de productos y total, datos que se pierden al vaciar el carrito.
+- **Decisión:** `checkoutSlice` guarda `confirmedOrder: { orderNumber, contact, totalItems, totalInCents }`, tomado **antes** de limpiar el carrito. `confirmOrder` vuelve a validar el contacto con Zod y usa `condition` para no correr con el carrito vacío ni dos veces seguidas (evita el doble envío). Número de orden `MS-` + 5 dígitos, como en el diseño.
+- **Propuso:** la IA, a partir del diseño; lo aprobé.
+
+## D26 · `createAppStore(storage, options)` con entorno y checkout inyectados
+- **Contexto:** `core/` no puede saber si está en desarrollo: `__DEV__` solo existe en React Native, `process.env` no existe en Vite dev e `import.meta.env` no existe en Metro.
+- **Decisión:** cada app pasa `isDevelopment` (`__DEV__` en móvil, `import.meta.env.DEV` en web), y el checkout recibe `delayMs` y `generateOrderNumber` como `extraArgument` del thunk. Así las pruebas no esperan 1.5 s reales ni dependen de números aleatorios.
+- **Por qué:** es la misma inversión de dependencias del `StorageAdapter`: `core/` define qué necesita y cada plataforma lo provee.
+- **Propuso:** la IA; lo aprobé.
+
+## D27 · `@reduxjs/toolkit` 2.12.0 en lugar de 2.13.0
+- **Contexto:** la IA ofreció 2.13.0 (15 días publicada) o 2.12.0 (mayo). Ambas traen `rawResponseSchema`.
+- **Decisión:** 2.12.0 exacta, con `react-redux` 9.3.0. Con Uniwind acepté una versión reciente porque no había alternativa; aquí sí la había, así que elegí la más probada.
+- **Propuso:** yo.
+
+## D28 · Las reglas del carrito devuelven la misma referencia si no cambian nada
+- **Contexto:** las pruebas detectaron que `increaseQuantity` con un id inexistente, o con un producto ya en 99, devolvía un arreglo nuevo con el mismo contenido. La persistencia lo tomaba como un cambio y escribía en el storage, y los `React.memo` volverían a renderizar.
+- **Decisión:** las reglas devuelven el mismo arreglo cuando nada cambia (probado con `toBe`); `CartState.items` es `readonly`.
+- **Lección:** este bug lo encontraron las pruebas de una regla pura, no la UI. Es la razón de escribir el dominio con pruebas antes de las pantallas.
+- **Propuso:** la IA lo detectó con las pruebas y lo corrigió.
+
 ---
 
 <!-- Plantilla para nuevas decisiones

@@ -151,6 +151,40 @@ Primero dame el plan. No instales nada sin mi aprobación. Al terminar: typechec
 
 ---
 
+## P04 + P05 · Dominio, estado y persistencia en `core/`
+- **Herramienta:** Claude Code, Plan mode.
+- **Por qué los junté:** son lógica pura con pruebas y sin interfaz; el riesgo de hacerlos juntos es bajo y ahorra una ronda de revisión.
+- **Prompt (resumen; texto completo en el historial de la sesión):**
+```
+P04+P05: dominio, estado y persistencia en core/, sin UI. Sigue CLAUDE.md (secciones 4, 5 y 6) y DECISIONS.md.
+1. Datos reales primero: obtén con curl una muestra real de la API y guarda 3 productos como fixture. Los schemas se escriben contra esa respuesta real.
+2. Dominio (funciones puras): money (formatPrice sin Intl), product.schema, categoryLabels ("jewelery" mal escrito en la API: solo cambia la etiqueta), catalog.selectors (filtro sin mayúsculas ni acentos), cart.schema con version, cart.rules (1..99), checkout.schema.
+3. Estado: RTK y react-redux exactos; baseApi + catalogApi con getProducts y getProductById; cartSlice que delega en cart.rules; checkoutSlice con confirmOrder (retraso y número de orden inyectables); createAppStore(storageAdapter); cartPersistence con listener que rehidrata validando con Zod.
+4. Pruebas: money, rules, selectors, filtro, schemas con respuestas inválidas, persistencia y checkout con timers falsos.
+5. Verificación: bundle de Metro importando el store completo desde core/, y build de web.
+Primero el plan con la lista de casos de prueba. No hagas commit.
+```
+- **Por qué lo escribí así:**
+  - **"Datos reales primero":** que los schemas se escriban contra la respuesta real de la API, no contra lo que la IA supone que devuelve.
+  - **Retraso y número de orden inyectables:** que el checkout se pueda probar sin esperas reales ni números aleatorios.
+  - **Bundle real de Metro:** después de lo de Zod en P02, pasar las pruebas ya no basta como verificación.
+- **Hallazgos de la IA en el plan:**
+  - `/products/999` responde `200` con cuerpo vacío, no 404: se trata como `PRODUCT_NOT_FOUND`.
+  - Validar con `parse` dentro de `transformResponse` produce un error no manejado en RTK: propuso `rawResponseSchema` (D24).
+  - El tablero de compra confirmada necesita datos que se pierden al vaciar el carrito (D25).
+  - `core/` no puede detectar el entorno en ambas plataformas (D26).
+- **Mis decisiones:** aprobé A, B y C; elegí RTK 2.12.0 en lugar de 2.13.0 por ser más probada (D27).
+- **Resultado:** **109 pruebas en 13 archivos** (105 nuevas en `core/`). Typecheck y lint en verde. Bundle de Metro de 721 KB con el store completo. Build de web de 390 KB con un import temporal del store (el build normal no importaba `core/` todavía, así que no probaba nada; la IA lo detectó y lo corrigió).
+- **Bug encontrado por las pruebas:** las reglas del carrito devolvían arreglos nuevos sin cambios reales, lo que provocaba escrituras innecesarias en el storage y renders de más. Corregido y probado con `toBe` (D28).
+- **Otros ajustes de la IA:** `immer` y `react-redux` agregados a `transformIgnorePatterns` de Jest (el preset de RN resuelve su versión ESM), y timers falsos en las pruebas de RTK Query para evitar avisos al cerrar el entorno.
+- **Revisión mía:**
+  - Acepté el riesgo documentado: si se agrega un producto antes de terminar de leer el carrito guardado, este lo reemplaza. En la práctica, leer el storage local termina mucho antes de que cargue el catálogo.
+  - Revisé los textos de validación: "Ingresa un correo válido" y el del teléfono vienen del diseño; "Ingresa tu nombre" y el máximo de 80 caracteres los propuso la IA y los acepté.
+- **Verificación propia:** corrí `npm test` y vi las 109 pruebas en verde.
+- **Commit:** `feat(core): agrega dominio, estado y persistencia del carrito con pruebas (P04-P05)`
+
+---
+
 <!-- Plantilla
 ## PXX · Título
 - **Prompt:**
