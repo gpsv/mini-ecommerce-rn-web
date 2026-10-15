@@ -9,6 +9,7 @@ export type RootStackParamList = {
   ProductDetail: { productId: number };
   Cart: undefined;
   Checkout: undefined;
+  OrderConfirmed: undefined;
 };
 
 export type RootStackScreenProps<RouteName extends keyof RootStackParamList> =

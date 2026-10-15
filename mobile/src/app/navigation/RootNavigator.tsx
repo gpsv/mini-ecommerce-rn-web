@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CartScreen } from '../../features/cart';
 import { ProductDetailScreen, ProductListScreen } from '../../features/catalog';
-import { CheckoutScreen } from '../../features/checkout';
+import { CheckoutScreen, OrderConfirmedScreen } from '../../features/checkout';
 import type { RootStackParamList } from '../../shared/navigation/types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -14,6 +14,7 @@ export function RootNavigator() {
       <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
       <Stack.Screen name="Cart" component={CartScreen} />
       <Stack.Screen name="Checkout" component={CheckoutScreen} />
+      <Stack.Screen name="OrderConfirmed" component={OrderConfirmedScreen} />
     </Stack.Navigator>
   );
 }

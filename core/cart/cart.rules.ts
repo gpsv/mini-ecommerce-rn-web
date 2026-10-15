@@ -1,3 +1,4 @@
+import { multiplyCents } from '../shared/money';
 import {
   MAX_QUANTITY,
   MIN_QUANTITY,
@@ -75,4 +76,12 @@ export function removeItem(
 
 export function clearCart(): readonly CartItem[] {
   return [];
+}
+
+/** Line subtotal (unit price × quantity) in integer cents. */
+export function getLineTotalInCents({
+  priceInCents,
+  quantity,
+}: Pick<CartItem, 'priceInCents' | 'quantity'>): number {
+  return multiplyCents(priceInCents, quantity);
 }

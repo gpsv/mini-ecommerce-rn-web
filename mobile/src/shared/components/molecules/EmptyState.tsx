@@ -19,6 +19,8 @@ export interface EmptyStateProps {
 interface VariantStyle {
   icon: LucideIcon;
   iconSize: number;
+  iconStrokeWidth: number;
+  /** Size, spacing and background of the icon circle. */
   circleClass: string;
   iconToken: ColorToken;
   /** 05-Listado-SinResultados: 18/24 · 10-Carrito-Vacio: 20/28 (title). */
@@ -31,8 +33,10 @@ const STATE_TITLE_CLASS = 'text-[18px] leading-6 font-semibold';
 const VARIANT_STYLE: Record<EmptyStateVariant, VariantStyle> = {
   cart: {
     icon: ShoppingCart,
-    iconSize: 32,
-    circleClass: 'bg-secondary',
+    // 10-Carrito-Vacio (the screen wins over the component sheet, as in P07).
+    iconSize: 44,
+    iconStrokeWidth: 1.8,
+    circleClass: 'size-24 mb-2 bg-secondary',
     iconToken: '--color-price',
     titleClass: 'text-title',
     actionVariant: 'primary',
@@ -40,7 +44,8 @@ const VARIANT_STYLE: Record<EmptyStateVariant, VariantStyle> = {
   search: {
     icon: SearchX,
     iconSize: 34,
-    circleClass: 'bg-primary-soft',
+    iconStrokeWidth: 2,
+    circleClass: 'size-[72px] mb-1 bg-primary-soft',
     iconToken: '--color-primary',
     titleClass: STATE_TITLE_CLASS,
     actionVariant: 'secondary',
@@ -48,7 +53,8 @@ const VARIANT_STYLE: Record<EmptyStateVariant, VariantStyle> = {
   notFound: {
     icon: PackageX,
     iconSize: 34,
-    circleClass: 'bg-primary-soft',
+    iconStrokeWidth: 2,
+    circleClass: 'size-[72px] mb-1 bg-primary-soft',
     iconToken: '--color-primary',
     titleClass: STATE_TITLE_CLASS,
     actionVariant: 'primary',
@@ -70,9 +76,9 @@ export function EmptyState({
   return (
     <View className={`items-center gap-3 px-8 ${className}`}>
       <View
-        className={`size-[72px] mb-1 rounded-full items-center justify-center ${style.circleClass}`}
+        className={`rounded-full items-center justify-center ${style.circleClass}`}
       >
-        <Icon size={style.iconSize} color={iconColor} strokeWidth={2} />
+        <Icon size={style.iconSize} color={iconColor} strokeWidth={style.iconStrokeWidth} />
       </View>
       <AppText className={`text-center ${style.titleClass}`}>{title}</AppText>
       <AppText tone="muted" className="text-center">

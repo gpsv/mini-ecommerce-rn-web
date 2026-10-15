@@ -2,6 +2,7 @@ import {
   addItem,
   clearCart,
   decreaseQuantity,
+  getLineTotalInCents,
   increaseQuantity,
   removeItem,
 } from '../cart/cart.rules';
@@ -133,5 +134,17 @@ describe('removeItem', () => {
 describe('clearCart', () => {
   it('returns an empty cart', () => {
     expect(clearCart()).toEqual([]);
+  });
+});
+
+describe('getLineTotalInCents', () => {
+  it('multiplies the unit price by the quantity in integer cents', () => {
+    expect(getLineTotalInCents(withQuantity(backpack, 3))).toBe(32985);
+  });
+
+  it('throws for a non-integer amount instead of drifting', () => {
+    expect(() => getLineTotalInCents({ priceInCents: 19.95, quantity: 3 })).toThrow(
+      RangeError,
+    );
   });
 });

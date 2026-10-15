@@ -207,6 +207,30 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 - **Por qué:** las pantallas de `features/` necesitan esos tipos, y la regla de dependencias (`features → shared → core`) no permite que importen de `app/`.
 - **Propuso:** la IA lo marcó con ⚠️; lo aprobé.
 
+## D36 · react-hook-form 7.88.0 + @hookform/resolvers 5.9.1
+- **Contexto:** el checkout necesita validar el formulario con el mismo `checkout.schema` de `core/`.
+- **Decisión:** React Hook Form con `zodResolver`. Elegí 7.88.0 en lugar de 7.90.0 (3 días publicada), con el mismo criterio de D27 y D30: la versión más probada que cubre lo necesario. Ambas librerías son solo JS y no requieren recompilar Android.
+- **Por qué RHF:** inputs no controlados (menos renders al escribir), enfoca el primer campo con error y se integra con Zod sin duplicar reglas: **las validaciones viven una sola vez en `core/`** y la web usará el mismo schema.
+- **Alternativa:** `useState` con validación manual (duplica reglas y más código) o Formik (más pesado, más renders).
+- **Propuso:** yo (requisitos iniciales); la versión, con el criterio de siempre.
+
+## D37 · Si la hoja de componentes y una pantalla difieren, gana la pantalla
+- **Contexto:** el EmptyState del carrito medía 72/34 en la hoja de componentes y 96/44 en la pantalla 10.
+- **Decisión:** se sigue la pantalla, porque es lo que ve el usuario. El cambio se aplica solo a la variante afectada (`cart`), sin tocar `search` ni `notFound`.
+- **Propuso:** la IA lo preguntó; la regla la fijé yo y se aplicó igual en P07 y P08.
+
+## D38 · El checkout conserva el resumen hasta navegar a la confirmación
+- **Contexto:** `confirmOrder` vacía el carrito y pasa a `confirmed` antes de que la pantalla navegue. Por un instante, el checkout mostraba "0 / $0.00" y **el botón "Confirmar compra" se volvía a habilitar**.
+- **Decisión:** el checkout se considera ocupado en `processing` y en `confirmed` (mantiene "Procesando…", los campos deshabilitados y atrás bloqueado), y `useOrderSummary` conserva el resumen tomado al enviar.
+- **Evidencia:** una prueba reproduce el estado intermedio. Se comprobó que falla sin la corrección.
+- **Propuso:** yo lo detecté al revisar el plan; la IA lo confirmó y lo corrigió.
+
+## D39 · Atrás bloqueado mientras procesa: BackHandler + `gestureEnabled`
+- **Decisión:** mientras se confirma la compra, `BackHandler` (con `useFocusEffect`) anula el botón atrás de Android y `gestureEnabled: false` bloquea el gesto en iOS. La flecha del header se deshabilita.
+- **Por qué no `usePreventRemove`:** su estado se actualiza en un efecto posterior y podría bloquear el `navigation.reset` que corre justo al terminar `confirmOrder`.
+- **Navegación final:** `reset` a `[catálogo, confirmación]` reutilizando la ruta existente del catálogo (no se vuelve a montar y conserva búsqueda, filtro y scroll); atrás desde la confirmación nunca regresa al checkout.
+- **Propuso:** la IA; lo aprobé.
+
 ---
 
 <!-- Plantilla para nuevas decisiones

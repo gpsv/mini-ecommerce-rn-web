@@ -16,6 +16,8 @@ interface BackHeaderProps {
   variant: 'back';
   title: string;
   onBack: () => void;
+  /** Checkout while processing: going back is blocked. */
+  isBackDisabled?: boolean;
 }
 
 export type AppHeaderProps = (HomeHeaderProps | BackHeaderProps) & {
@@ -56,6 +58,7 @@ export function AppHeader(props: AppHeaderProps) {
             icon={ArrowLeft}
             accessibilityLabel="Regresar"
             variant="onPrimary"
+            disabled={props.isBackDisabled}
             onPress={props.onBack}
           />
           <AppText

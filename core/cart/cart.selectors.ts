@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { multiplyCents, sumCents } from '../shared/money';
+import { sumCents } from '../shared/money';
+import { getLineTotalInCents } from './cart.rules';
 import type { CartState } from './cartSlice';
 
 /** Only the slice these selectors need, to avoid importing RootState (and a cycle). */
@@ -17,5 +18,5 @@ export const selectTotalItems = createSelector([selectCartItems], items =>
 );
 
 export const selectTotalInCents = createSelector([selectCartItems], items =>
-  sumCents(items.map(item => multiplyCents(item.priceInCents, item.quantity))),
+  sumCents(items.map(getLineTotalInCents)),
 );

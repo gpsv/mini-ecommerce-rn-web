@@ -253,6 +253,62 @@ Procede. No hagas commit. Al terminar: typecheck, lint, test con número de prue
 
 ---
 
+## P08 · Carrito, checkout y compra confirmada en móvil
+- **Herramienta:** Claude Code, Plan mode, con aprobación manual de cada edición.
+- **Prompt:**
+```
+P08: carrito y checkout de mobile. Sigue CLAUDE.md y DECISIONS.md (en especial D08, D24, D25 y D32-D35), y los tableros de carrito, carrito vacío, confirmar eliminación, checkout y compra confirmada en design/reference/.
+
+1. Carrito (reemplaza la pantalla temporal):
+   - Lista de productos con imagen, título, precio unitario, QuantityStepper y subtotal por línea.
+   - En cantidad 1, el botón "−" ofrece eliminar con confirmación Alert.alert (D08). Botón eliminar por línea con la misma confirmación.
+   - Resumen: total de artículos y total a pagar, con los selectores de core/ (centavos + formatPrice). Nada de cálculos en la pantalla.
+   - EmptyState de carrito con botón para volver al catálogo (resuelve la diferencia de EmptyState pendiente de P06/P07).
+   - Botón "Continuar al pago" deshabilitado si el carrito está vacío.
+2. Checkout (reemplaza la pantalla temporal):
+   - Resumen del pedido (artículos y total) y formulario con React Hook Form + checkout.schema de core/ vía zodResolver. Instala react-hook-form y @hookform/resolvers en versión exacta, compatibles con Zod 4.6.7 (verifica peerDependencies). Son solo JS: no requieren recompilar Android.
+   - Teclados correctos por campo (email, phone-pad), "siguiente" entre campos, y que el teclado no tape el botón en Android.
+   - "Confirmar compra" despacha confirmOrder de checkoutSlice: estado procesando, botón deshabilitado contra doble envío, y botón atrás de Android y gesto de regreso bloqueados mientras procesa.
+3. Compra confirmada:
+   - Pantalla que lee confirmedOrder (D25): número de orden, artículos y total. El carrito queda vacío y persistido vacío.
+   - "Seguir comprando" regresa al catálogo con reset del stack, para que atrás no vuelva al checkout.
+4. Pruebas RNTL: carrito (incrementar, decrementar, eliminar con confirmación, totales), validación del formulario, flujo de confirmación con timers falsos que deja el carrito vacío.
+
+Primero el plan, con las versiones exactas y las preguntas que tengas. No hagas commit. Al terminar: typecheck, lint, test con número de pruebas y qué revisar en el emulador.
+```
+- **Por qué lo escribí así:**
+  - **"Nada de cálculos en la pantalla":** todos los totales salen de `core/`, para que la web use exactamente los mismos.
+  - **Bloquear atrás y el doble envío:** sin eso, el usuario podría salir a medio proceso o confirmar dos veces.
+  - **Reset del stack:** sin él, atrás desde la confirmación regresaría al checkout de un carrito que ya no existe.
+- **Preguntas de la IA y mis respuestas:**
+  - **Textos:** la IA detectó que los textos de mi prompt ("Continuar al pago", "Seguir comprando", "Carrito") no coincidían con el diseño. Elegí los del diseño ("Ir a checkout", "Volver al catálogo", "Mi carrito"), porque el diseño es la fuente de verdad.
+  - **react-hook-form:** 7.88.0 en lugar de 7.90.0 (3 días publicada), con `@hookform/resolvers` 5.9.1 (soporta Zod 4). Mismo criterio que D27 y D30 (D36).
+  - **EmptyState del carrito:** la hoja de componentes y la pantalla 10 diferían. Elegí la pantalla (círculo de 96), con la regla "la pantalla gana sobre la hoja" (D37).
+- **Revisión del plan (mi corrección):** detecté que al terminar `confirmOrder` el carrito se vacía **antes** de `navigation.reset`, así que el checkout podía mostrar "Productos 0 / $0.00" por un instante. Pedí verificarlo y cubrirlo con una prueba.
+  - **Resultado:** el bug era real y más grave de lo que suponía: **el botón "Confirmar compra" también se volvía a habilitar** en ese instante, lo que abría la puerta a un doble envío.
+  - **Corrección:** el checkout se considera ocupado en `processing` **y** `confirmed`, y `useOrderSummary` conserva el resumen tomado al enviar (D38).
+- **Resultado:**
+  - **`core/`:** `getLineTotalInCents`, para que el subtotal por línea tampoco se calcule en la pantalla.
+  - **Carrito:** `useCart`, `useConfirmRemoveItem` (Alert.alert, D08), `CartItemRow` (memo) y `CartSummary`. Muestra un spinner mientras se lee el carrito guardado, para que no aparezca "vacío" por un instante.
+  - **Checkout:** `useCheckoutForm` (RHF + `zodResolver(CheckoutContactSchema)`), `ContactForm` con teclados por campo y "siguiente" con `setFocus`, `KeyboardAvoidingView` y `useBlockBackWhileProcessing` (BackHandler + `gestureEnabled: false`).
+  - **Compra confirmada:** lee `confirmedOrder`. El `reset` reutiliza la ruta del catálogo, que conserva búsqueda, filtro y scroll.
+  - **147 pruebas en 23 suites** (17 nuevas). Typecheck y lint en verde. El bundle de release de Android compila con las librerías nuevas.
+- **Análisis de lo que hizo la IA:**
+  - **Descartó `usePreventRemove`** porque su estado se actualiza en un efecto posterior y podía bloquear el `reset` justo al terminar la compra. BackHandler + `gestureEnabled` no interfieren.
+  - **Mutation testing:** para las dos pruebas clave (resumen congelado y atrás bloqueado), quitó la protección a propósito, comprobó que las pruebas **fallaban** y luego la restauró. Así se demuestra que las pruebas detectan el problema.
+  - **Cambio respecto al plan:** `resetCheckout` se despacha solo al desmontar la pantalla de confirmación, no al tocar el botón; si no, el contenido desaparecía durante la animación de salida. Lo acepté.
+  - **Atrás de Android en Jest** (que corre como iOS): lo simuló con el mismo orden de listeners de Android.
+  - `npm install` reporta un aviso de seguridad de `braces` (dependencia de desarrollo, no llega a la app). Se revisa en P11.
+- **Verificación propia (emulador Android API 35):**
+  - Flujo completo: agregar → carrito (+, −, eliminar con confirmación) → checkout → errores de validación → confirmar → compra confirmada.
+  - El teclado no tapa "Confirmar compra" (sin la librería extra que estaba como riesgo).
+  - "Procesando…" se ve con el resumen intacto, sin bajar a $0.00.
+  - Atrás desde la confirmación lleva al catálogo.
+  - Después de `adb shell am force-stop com.minishop` y reabrir, el carrito sigue vacío y el badge no muestra número.
+- **Commit:** `feat(mobile): agrega carrito, checkout y compra confirmada con pruebas de flujo (P08)`
+
+---
+
 <!-- Plantilla
 ## PXX · Título
 - **Prompt:**

@@ -65,7 +65,11 @@ export function IconButton({
 }: IconButtonProps) {
   const variantStyle = VARIANT_STYLE[variant];
   const iconColor = useTokenColor(variantStyle.iconToken);
-  const disabledColor = useTokenColor('--color-disabled-foreground');
+  const neutralDisabledColor = useTokenColor('--color-disabled-foreground');
+  // 12-Checkout-Procesando: on the primary header, disabled is white at 55% (D31).
+  const onPrimaryDisabledColor = useTokenColor('--color-primary-foreground', 0.55);
+  const disabledColor =
+    variant === 'onPrimary' ? onPrimaryDisabledColor : neutralDisabledColor;
   const rippleColor = useTokenColor(variantStyle.iconToken, 0.2);
   const hitSlop = (MIN_TOUCH_SIZE - size) / 2;
 
