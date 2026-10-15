@@ -91,3 +91,20 @@ describe('ProductListScreen filters in the URL', () => {
     expect(router.state.location.pathname).toBe('/carrito')
   })
 })
+
+describe('ProductListScreen error state', () => {
+  it('shows the error and loads the catalog after "Reintentar"', async () => {
+    const user = userEvent.setup()
+    fetchMock.mockResolvedValueOnce(new Response('', { status: 500 }))
+    renderApp({ path: '/' })
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('No pudimos cargar los productos')
+    expect(screen.queryByRole('heading', { name: 'Mochila escolar ligera' })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Reintentar' }))
+
+    expect(await screen.findByRole('heading', { name: 'Mochila escolar ligera' })).toBeInTheDocument()
+    expect(screen.queryByText('No pudimos cargar los productos')).not.toBeInTheDocument()
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+  })
+})

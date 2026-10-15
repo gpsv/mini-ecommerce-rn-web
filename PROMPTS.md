@@ -492,8 +492,58 @@ Primero el plan y tus preguntas. No hagas commit. Al terminar: typecheck, lint y
   - **No llega al APK:** revisó el sourcemap del bundle de release (3,136 módulos) y no aparecen `braces`, `micromatch`, `metro` ni `jest`. Solo corre en Node, durante el desarrollo.
   - **No hay versión corregida publicada**, y `npm audit fix --force` bajaría Jest a 25 y la CLI de RN a 13 (rompe la plantilla). Decisión: no actuar y revisarlo cuando salga una versión corregida (D52).
   - Web tiene 0 vulnerabilidades.
-- **Verificación propia:** el CI en GitHub (pestaña Actions) con los dos jobs en verde y el badge en "passing".
+- **Verificación propia:** el CI corrió en GitHub (pestaña Actions) y **pasó en verde a la primera ejecución, en 1 min 9 s**, con los dos jobs (mobile y web). Confirma que el proyecto se instala desde cero en un entorno limpio, incluido el lockfile de web resuelto con npm 11 (D45).
 - **Commit:** `ci: agrega reglas de arquitectura en ESLint y GitHub Actions para mobile y web (P11)`
+
+---
+
+## P12 · Entrega final: auditoría, README, capturas y APK
+- **Herramienta:** Claude Code, Plan mode.
+- **Prompt:**
+```
+P12: entrega final. Sigue CLAUDE.md y DECISIONS.md. No edites PROMPTS.md ni DECISIONS.md (los mantengo yo), pero léelos completos: son la fuente para el README.
+
+1. Auditoría contra el reto: lee los requisitos del reto (listado, detalle, carrito con +/−/eliminar y totales, checkout simulado con resumen/confirmar/vaciar, loader, error con reintentar, evitar llamadas innecesarias; bonus: filtro por categoría, búsqueda, persistencia; uso de IA documentado; CLI; Android; web en React). Arma una tabla requisito → dónde está en mobile → dónde está en web → prueba que lo cubre → evidencia. Si algo falta o está incompleto, dímelo antes de seguir.
+
+2. README.md completo en la raíz (en español, conserva el badge):
+   - Qué es y capturas (mobile y web) al inicio.
+   - Stack con versiones y por qué (enlaza a las decisiones D##).
+   - Arquitectura: diagrama Mermaid de mobile/ + web/ + core/ + design/, y la regla features → shared → core verificada por ESLint (D50). Destaca qué comparte core/ (dominio, estado, persistencia, validaciones y hooks, D44) y qué pone cada plataforma.
+   - Cómo correrlo: requisitos (Node 22 con nvm, JDK, Android SDK, emulador), comandos de mobile y web desde cero, pruebas, lint y typecheck.
+   - Instalar el APK sin compilar (enlace al Release).
+   - Cómo se cumple cada requisito (versión corta de la tabla de auditoría).
+   - Uso de IA: cómo trabajé (CLAUDE.md como contexto, Plan mode, aprobación de cada plan, verificación propia en emulador y navegador), enlace a PROMPTS.md y 4-5 ejemplos concretos donde corregí o mejoré lo que propuso la IA (tómalos de PROMPTS.md).
+   - Decisiones clave (resumen de 8-10 con enlace a DECISIONS.md), limitaciones conocidas y siguientes pasos.
+   - Enlace a docs/troubleshooting.md.
+
+3. Capturas en docs/screenshots/: mobile (listado, detalle con snackbar, carrito, checkout con error de validación, compra confirmada, error con Reintentar usando el APK de release en modo avión) con adb; web (listado ancho, detalle, carrito con diálogo, checkout, compra confirmada) con la herramienta que usaste en P10 desde tu scratchpad, sin agregarla al proyecto. Restaura el emulador al terminar.
+
+4. APK final: regenera el APK de release con el código actual y dime su ruta y tamaño. Dame el comando exacto para crear el GitHub Release v1.0.0 con el APK adjunto (lo ejecuto yo).
+
+5. Limpia lo que quedó de plantilla: mobile/README.md y web/README.md (reemplázalos por 3-4 líneas que apunten al README raíz).
+
+Primero el plan y la tabla de auditoría. No hagas commit.
+```
+- **Por qué lo escribí así:**
+  - **La auditoría va primero:** antes de escribir "cumple todo" en el README, se comprueba requisito por requisito con archivo, prueba y evidencia.
+  - **El README sale de `PROMPTS.md` y `DECISIONS.md`:** el uso de IA y las decisiones ya estaban documentados; solo había que resumirlos.
+  - **El Release lo creo yo:** publicar es una acción pública.
+- **Resultado de la auditoría:** todos los requisitos y bonus cubiertos en mobile y web. Faltantes encontrados: el APK era anterior a P10/P11, no existía el Release, **ninguna prueba renderizaba el listado fallando y pulsaba Reintentar** (solo se probaba `ErrorState` aislado) y faltaba la captura web del error.
+- **Mis respuestas al aprobar:**
+  - Agregar la prueba de pantalla de error con Reintentar en ambas apps **antes** de regenerar el APK ("error con reintentar" es un requisito explícito).
+  - Agregar la captura web del error.
+  - Agregar al README una sección **"Cómo agregaría…"** con 3 ejemplos sobre la arquitectura actual (selector de cantidad, paginación del servidor, nueva feature o plataforma), porque en la sesión de revisión preguntarán cómo implementar cosas nuevas.
+- **Resultado:**
+  - **Pruebas de error con Reintentar** (mobile nueva, web un caso más): la API falla → aparece el error → Reintentar → carga el listado, con 2 llamadas en total. **Se comprobó rompiendo `retry` a propósito: las dos fallaron**; luego se restauró.
+  - **Jest 27 suites / 160 pruebas; Vitest 6 archivos / 18 pruebas.** Typecheck y lint en verde; JS inicial de web 164.9 KB gzip.
+  - **APK final:** 72.6 MB, SHA-256 `3eef313dd655df6fb2cf6e73051bd51a286b0a435bab9d641248546c4a60ad98`. Recorrido completo sin `FATAL EXCEPTION` en logcat.
+  - **12 capturas** en `docs/screenshots/`: 6 de mobile (APK de release, barra de estado limpia con demo mode, incluida la de error en modo avión) y 6 de web (1440×900, incluida la de error bloqueando la API).
+  - **README completo** con capturas, stack con versiones, diagrama Mermaid, cómo correrlo, APK, requisitos, uso de IA con 5 ejemplos, decisiones clave, limitaciones, "Cómo agregaría…" y troubleshooting. La IA verificó con un script que todos los enlaces y las 30+ anclas a `DECISIONS.md` existen.
+  - `mobile/README.md` y `web/README.md` reducidos a 3-4 líneas que apuntan al README raíz.
+- **Hallazgo:** la barra flotante del teclado (Gboard) del emulador tapaba el formulario en la captura del checkout; se desactivó solo durante esa toma y se restauró.
+- **Verificación propia:** revisé el README y las capturas en GitHub, y descargué el APK del Release.
+- **Commit:** `docs: agrega README final, capturas y prueba de error con reintentar (P12)`
+- **Release:** `v1.0.0` con `MiniShop-v1.0.0.apk`.
 
 ---
 
