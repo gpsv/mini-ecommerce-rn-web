@@ -9,7 +9,7 @@ import {
   mockFetch,
   type FetchMock,
 } from '../../../../../test-utils/storeTestUtils';
-import { useProductDetail } from '../useProductDetail';
+import { useProductDetail } from '@core/catalog/hooks/useProductDetail';
 
 let fetchMock: FetchMock;
 

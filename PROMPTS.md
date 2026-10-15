@@ -356,6 +356,98 @@ Primero el plan y tus preguntas. No hagas commit. Al terminar: typecheck, lint, 
 
 ---
 
+## P10 · App web reutilizando `core/`
+- **Herramienta:** Claude Code, Plan mode.
+- **Prompt:**
+```
+P10: app web en web/ (Vite + React + Tailwind 4) reutilizando core/. Sigue CLAUDE.md y DECISIONS.md, y los tableros web de design/reference/ (Web-*). La marca es "MiniShop" (D42).
+
+0. Reutilización (lo primero del plan): revisa los hooks de mobile/src (useProductListing, usePaginatedProducts, useDebouncedValue, useOrderSummary, useProductDetail y los de cart/checkout). Los que sean React puro (sin react-native ni react-navigation) propón moverlos a core/ para que web y mobile usen el mismo código; los que dependan de la plataforma, sepáralos en una parte compartida y un adaptador por plataforma. Dime cuáles mueves, cuáles no y por qué. Las pruebas existentes de mobile deben seguir pasando.
+
+1. Store: createAppStore(localStorageAdapter, { isDevelopment: import.meta.env.DEV }). El adaptador de localStorage implementa StorageAdapter de core/ y maneja errores (modo privado, cuota llena) sin romper la app.
+
+2. Rutas con React Router (versión exacta, verifica compatibilidad con React 19): / (listado), /producto/:id (detalle), /carrito, /checkout y /compra-confirmada.
+   - El detalle por URL directa (sin caché) usa el respaldo getProductById (D32) y muestra notFound si no existe.
+   - /checkout con el carrito vacío redirige a /carrito.
+   - /compra-confirmada sin confirmedOrder (por ejemplo, al recargar) redirige a /.
+   - 404 para rutas desconocidas.
+
+3. Pantallas según los tableros web: listado con grid responsivo (columnas según el ancho), búsqueda, chips de categoría, skeleton, error con Reintentar y vacío; detalle; carrito con ConfirmDialog accesible para eliminar (role="dialog", foco atrapado, Esc cierra, el foco regresa al botón que lo abrió); checkout con React Hook Form + zodResolver usando checkout.schema de core/ (mismas versiones exactas que mobile: react-hook-form 7.88.0 y @hookform/resolvers 5.9.1); compra confirmada.
+   - Mismas reglas que mobile: D08 (eliminar en cantidad 1 con confirmación), D38 (resumen congelado mientras procesa) y doble envío bloqueado.
+
+4. Optimización: "cargar más" con IntersectionObserver sobre usePaginatedProducts, imágenes con loading="lazy", width/height explícitos para evitar saltos de layout, y una sola petición a /products (verificable en la pestaña Network).
+
+5. Accesibilidad básica: HTML semántico (header, main, nav, button reales), labels en los inputs, foco visible y alt en las imágenes.
+
+6. Pruebas: propón si agregar Vitest + Testing Library con pocas pruebas clave (ConfirmDialog y flujo de checkout). Si la configuración es costosa, dímelo y lo decidimos.
+
+Primero el plan, con versiones exactas y tus preguntas. No hagas commit. Al terminar: typecheck, lint, test con número de pruebas y suites, build de producción con su tamaño, y cómo verifico en Chrome DevTools que /products se llama una sola vez.
+```
+- **Por qué lo escribí así:**
+  - **El punto 0 va primero** porque define cuánto código nuevo hay que escribir: es la prueba real de la arquitectura.
+  - **URL directa y recarga:** son casos que solo existen en web; pensarlos demuestra que no se copió la app móvil.
+  - **Mismas versiones y reglas que mobile** (D08, D38): las dos plataformas deben comportarse igual.
+- **Plan de la IA:** casi todos los hooks pasan a `core/`; solo se quedan por plataforma la confirmación (`Alert` / `ConfirmDialog`) y el bloqueo de navegación (`BackHandler` / `useBlocker`). Además anticipó dos bugs propios de web: el guard de `/checkout` que, sin esperar la hidratación ni revisar `status`, sacaría al usuario al recargar o durante el estado intermedio de D38; y el `IntersectionObserver` que en pantallas anchas no vuelve a disparar si no se reconecta.
+- **Mis respuestas:**
+  - Rutas en español (`/producto/:id`, como `/carrito`). `CLAUDE.md` y `DECISIONS.md` los actualicé yo (D43).
+  - Aprobé mover los hooks a `core/`, incluido `useCheckoutForm` (D44).
+  - `ConfirmDialog` propio en lugar de `<dialog>` nativo, porque jsdom no implementa `showModal()` y la prueba del foco no probaría nada real (D45).
+  - Vitest sí, y versiones de web fijadas a las instaladas.
+  - **Orden para reducir riesgo:** primero mover los hooks y confirmar que las pruebas de mobile y el bundle de Metro siguen en verde; después construir la web.
+- **Problema durante la implementación:** npm 10.9.9 truena (`TypeError: edgesOut`) al instalar Vitest 4.1.11, por el peer opcional `@vitejs/devtools` de Vite 8. La IA lo reprodujo en una copia aislada antes de proponer nada. Elegí resolver el lockfile **una sola vez con npm 11.6.2**: con ese lockfile, npm 10 hace `npm ci` y `npm install` sin error, sin `--force` ni `--legacy-peer-deps`, y conservando la versión aprobada.
+- **Resultado:**
+  - **Web completa** con React Router 7.18.4 (data router), Tailwind 4 con los mismos tokens, `lucide-react` 1.48.0 y RHF con el schema de `core/`.
+  - Grid de 4/3/2 columnas, skeleton, error con Reintentar, vacío, "cargar más" con `IntersectionObserver`, imágenes `lazy` con tamaño explícito (la del detalle `eager`, porque es el LCP).
+  - Accesibilidad: HTML semántico, labels, `aria-invalid`, `aria-live`, foco visible de 3 px, "Saltar al contenido", `<title>` por página, `lang="es"`, tarjetas no focusables (sus acciones sí).
+  - **Pruebas:** mobile 26 suites y 159 pruebas (las 156 de antes + 3 de `getFirstName`); web 5 archivos y 15 pruebas. Bundle de Metro en verde después de mover los hooks.
+- **Decisiones de la IA al implementar que revisé:**
+  - ✅ Reinicio del checkout al salir de `/compra-confirmada` por cualquier camino (header, atrás), para no dejar el siguiente checkout bloqueado.
+  - ✅ `useBlocker` + `beforeunload` solo en `processing`, así la navegación a la confirmación nunca se detiene.
+  - ✅ Sin selector de cantidad en el detalle web (el tablero lo muestra): mobile tampoco lo tiene y `core/` no tiene `addItem` con cantidad. Queda como mejora documentada.
+  - ✅ Tarjetas no focusables aunque el tablero les pone `tabindex="0"`: un `article` focusable sin acción es una trampa para el teclado.
+  - 🔧 `role="dialog"` → pedí **`alertdialog`**, como en el tablero 09: es el rol correcto para confirmar una acción destructiva.
+  - 🔧 Al volver del detalle se perdían la búsqueda y la categoría. Pedí guardarlas en la URL (`?q=&categoria=`).
+- **Prompt de ajustes:**
+```
+Ajustes al P10:
+1. ConfirmDialog: cambia role="dialog" por role="alertdialog", como en el tablero 09. Ajusta la prueba.
+2. Búsqueda y categoría en la URL (?q=&categoria=) en la web, para que se conserven al volver del detalle, al recargar y al compartir el link. useProductListing de core/ no debe depender de React Router: haz que acepte el estado de forma controlada (valor + setter) con un default interno, para que mobile siga igual sin cambios de comportamiento. El debounce sigue aplicando a la búsqueda. Usa replace para no llenar el historial con cada tecla. Agrega una prueba.
+3. Code splitting: carga con lazy() las rutas de checkout y compra confirmada (con un fallback de carga), para que react-hook-form solo se descargue al llegar ahí. Reporta los tamaños del build antes y después.
+No hagas commit. Al terminar: typecheck, lint, test (mobile y web, con números) y tamaños del build.
+```
+- **Resultado de los ajustes:**
+  - `useProductListing` acepta `{ filters, setFilters }` opcional; sin él usa su propio `useState`, así que **mobile no cambió**. Un solo `setFilters` con el objeto completo, porque con dos setters "Limpiar búsqueda" haría dos `setSearchParams` y el segundo pisaría al primero.
+  - Búsqueda y categoría con `replace` (atrás no recorre cada tecla ni cada chip). "Volver al catálogo" hace `navigate(-1)` si vienes del listado (conserva filtros y scroll) o va a `/` si abriste el detalle por link directo.
+  - Prueba nueva: link compartido llega filtrado, `REPLACE` al escribir, volver del detalle conserva los filtros con una sola petición. **Se comprobó que falla sin `replace`.**
+  - **Code splitting:** JS inicial de 178.9 a **164.9 KB gzip (−7.8 %)**; `CheckoutScreen` (14 KB gzip) y `OrderConfirmedScreen` en chunks aparte. Se verificó que RHF solo está en el chunk del checkout.
+  - Web: 6 archivos y **17 pruebas**; mobile sin cambios (159).
+- **Limitaciones aceptadas:** al volver al listado, la paginación regresa a la página 1 (no está en la URL). El JS principal sigue arriba de 500 KB por `react-dom`, `react-router`, Zod y RTK.
+- **Revisión visual mía en Chrome (encontré 2 problemas):**
+  1. Los botones de la tarjeta se cortaban ("Ver det...", "Agre...") con 4 columnas y DevTools abierto.
+  2. En el checkout angosto, el resumen con "Confirmar compra" quedaba **arriba** del formulario: el usuario veía el botón antes de llenar sus datos (en mobile el orden es el correcto).
+- **Prompt de corrección visual:**
+```
+Dos ajustes visuales en la web:
+
+1. Tarjeta del listado: los botones se cortan ("Ver det...", "Agre...") con 4 columnas a ~1450 px de ancho de ventana (DevTools abierto). Los textos de los botones nunca deben truncarse. Revisa el tablero web del listado y resuélvelo sin cambiar los textos: por ejemplo, apilar los botones cuando la tarjeta es angosta (container query de Tailwind 4 sobre la tarjeta, no media query de la ventana), o ajustar padding/gap.
+
+2. Checkout: cuando las columnas se apilan (pantalla angosta), el resumen con el botón "Confirmar compra" queda ARRIBA del formulario, así que el usuario ve el botón antes de llenar sus datos. El orden en una columna debe ser igual que en mobile: primero "Datos de contacto", después "Resumen del pedido" y al final "Confirmar compra". En dos columnas (pantalla ancha) respeta el tablero web 20 (formulario a la izquierda, resumen a la derecha con el botón). Conserva el orden del DOM coherente con el orden visual (accesibilidad: el orden de Tab debe seguir lo que se ve), así que no lo resuelvas solo con la propiedad CSS order.
+
+Revisa ambos a 1440, 1280, 1024, 800 y 375 px. No hagas commit. Al terminar: typecheck, lint y test web con número de pruebas.
+```
+- **Por qué container query y no media query:** el ancho de la tarjeta depende del número de columnas, no del ancho de la ventana. **Por qué no CSS `order`:** movería el botón visualmente, pero Tab seguiría el HTML y llegaría a "Confirmar compra" antes que a los campos.
+- **Resultado de la corrección:**
+  - El problema era más amplio: los botones se cortaban en **tres rangos** (1030–1170 px, 650–870 px y 320 px). Ahora la tarjeta es `@container` y los botones van lado a lado solo si la tarjeta mide ≥ 272 px; si no, se apilan. `Button` usa `whitespace-nowrap` en lugar de `truncate` en toda la web.
+  - La IA lo **midió en Chrome real de 10 en 10 px, de 320 a 1600 px**: ningún botón se trunca ni se desborda (con "Agregar" y "Agregado"). Usó `puppeteer-core` solo en su scratchpad, sin agregarlo al proyecto.
+  - En el checkout, el DOM ya estaba en orden; lo subía un `order-first` copiado del tablero 20. Se quitó: el orden visual y el del DOM coinciden, y Tab va Nombre → Correo → Teléfono → Confirmar compra en todos los anchos (D49).
+- **Verificación propia (Chrome):**
+  - Network (Fetch/XHR): **una sola petición a `products`** al recorrer listado, detalle, carrito y checkout.
+  - Flujo completo: búsqueda, agregar, eliminar con diálogo de confirmación y compra confirmada.
+  - Revisé los botones de las tarjetas y el orden del checkout después de la corrección.
+- **Commit:** `feat(web): agrega app web reutilizando dominio, estado y hooks de core (P10)`
+
+---
+
 <!-- Plantilla
 ## PXX · Título
 - **Prompt:**

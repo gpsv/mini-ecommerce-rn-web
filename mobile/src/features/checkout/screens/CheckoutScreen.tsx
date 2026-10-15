@@ -8,8 +8,8 @@ import { getLegacyShadowStyle } from '../../../shared/platform/shadows';
 import { ContactForm } from '../components/ContactForm';
 import { OrderSummary } from '../components/OrderSummary';
 import { useBlockBackWhileBusy } from '../hooks/useBlockBackWhileBusy';
-import { useCheckoutForm } from '../hooks/useCheckoutForm';
-import { useOrderSummary } from '../hooks/useOrderSummary';
+import { useCheckoutForm } from '@core/checkout/hooks/useCheckoutForm';
+import { useOrderSummary } from '@core/checkout/hooks/useOrderSummary';
 import { resetToOrderConfirmed } from '../navigation/checkoutRoutes';
 
 export function CheckoutScreen({ navigation }: RootStackScreenProps<'Checkout'>) {

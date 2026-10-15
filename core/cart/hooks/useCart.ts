@@ -4,10 +4,9 @@ import {
   selectIsCartHydrated,
   selectTotalInCents,
   selectTotalItems,
-} from '@core/cart/cart.selectors';
-import { decreaseQuantity, increaseQuantity } from '@core/cart/cartSlice';
-import { useAppDispatch } from '../../../shared/hooks/useAppDispatch';
-import { useAppSelector } from '../../../shared/hooks/useAppSelector';
+} from '../cart.selectors';
+import { decreaseQuantity, increaseQuantity } from '../cartSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 /** Cart data from core/ selectors (cents) plus stable quantity callbacks for memoized rows. */
 export function useCart() {

@@ -17,9 +17,9 @@ import { Snackbar } from '../../../shared/components/molecules/Snackbar';
 import type { RootStackScreenProps } from '../../../shared/navigation/types';
 import { getLegacyShadowStyle } from '../../../shared/platform/shadows';
 import { CartHeaderButton } from '../../cart';
-import { useAddToCart } from '../hooks/useAddToCart';
-import { useAddToCartFeedback } from '../hooks/useAddToCartFeedback';
-import { useProductDetail } from '../hooks/useProductDetail';
+import { useAddToCart } from '@core/catalog/hooks/useAddToCart';
+import { useAddToCartFeedback } from '@core/catalog/hooks/useAddToCartFeedback';
+import { useProductDetail } from '@core/catalog/hooks/useProductDetail';
 
 /** 15-Specs: bottom bar 80 (min-h-bottom-bar) · snackbar 12 above it. */
 const BOTTOM_BAR_HEIGHT = 80;

@@ -22,8 +22,11 @@ import {
 } from '../components/productGridLayout';
 import { ProductGridSkeleton } from '../components/ProductGridSkeleton';
 import { ProductListHeader } from '../components/ProductListHeader';
-import { useAddToCart } from '../hooks/useAddToCart';
-import { useProductListing, type ListingStatus } from '../hooks/useProductListing';
+import { useAddToCart } from '@core/catalog/hooks/useAddToCart';
+import {
+  useProductListing,
+  type ListingStatus,
+} from '@core/catalog/hooks/useProductListing';
 
 const keyExtractor = (product: CatalogProduct) => String(product.id);
 

@@ -4,6 +4,6 @@
   "scripts": {
     "lint": "npm run lint --prefix mobile && npm run lint --prefix web",
     "typecheck": "npm run typecheck --prefix mobile && npm run typecheck --prefix web",
-    "test": "npm test --prefix mobile"
+    "test": "npm test --prefix mobile && npm test --prefix web"
   }
 }

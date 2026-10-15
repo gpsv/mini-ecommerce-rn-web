@@ -1,7 +1,7 @@
-import { catalogApi, useGetProductByIdQuery } from '@core/catalog/catalogApi';
-import type { CatalogProduct } from '@core/catalog/product.schema';
-import { hasApiErrorCode } from '@core/store/apiErrors';
-import { API_ERROR_CODES } from '@core/store/baseApi';
+import { hasApiErrorCode } from '../../store/apiErrors';
+import { API_ERROR_CODES } from '../../store/baseApi';
+import { catalogApi, useGetProductByIdQuery } from '../catalogApi';
+import type { CatalogProduct } from '../product.schema';
 
 export type ProductDetailStatus = 'loading' | 'error' | 'notFound' | 'success';
 

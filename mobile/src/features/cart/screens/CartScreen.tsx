@@ -7,7 +7,7 @@ import { EmptyState } from '../../../shared/components/molecules/EmptyState';
 import type { RootStackScreenProps } from '../../../shared/navigation/types';
 import { CartItemRow } from '../components/CartItemRow';
 import { CartSummary } from '../components/CartSummary';
-import { useCart } from '../hooks/useCart';
+import { useCart } from '@core/cart/hooks/useCart';
 import { useConfirmRemoveItem } from '../hooks/useConfirmRemoveItem';
 
 const keyExtractor = (item: CartItem) => String(item.id);

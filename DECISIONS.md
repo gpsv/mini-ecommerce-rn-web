@@ -99,7 +99,7 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 - **Por qué:** coherente con D02, que no comparte UI. En móvil, el diálogo nativo es accesible y familiar para el usuario.
 
 ## D16 · Sin deep links en móvil; fallback del detalle para web
-- **Decisión:** no se configura linking en móvil. `getProductById` existe como fallback porque en web se puede abrir `/product/:id` directo.
+- **Decisión:** no se configura linking en móvil. `getProductById` existe como fallback porque en web se puede abrir `/producto/:id` directo (ruta en español desde P10, D43).
 
 ## D17 · Caché de catálogo por sesión
 - **Decisión:** "una sola llamada" es por sesión. La caché de RTK Query no se persiste; no hay modo offline del catálogo.
@@ -257,6 +257,57 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 - **Limitación:** en API 24 y 25 se quedan los PNG de la plantilla.
 - **Sin cambios:** `design/reference/` se conserva como la exportación original del diseño.
 - **Propuso:** yo. Es una de las pocas decisiones en las que me aparto del diseño, y fue por coherencia de marca.
+
+## D43 · Rutas web en español
+- **Decisión:** `/`, `/producto/:id`, `/carrito`, `/checkout`, `/compra-confirmada` y una página 404. React Router 7.18.4 (exacta) en modo data router (`createBrowserRouter`), necesario para `useBlocker`.
+- **Guards:**
+  - `/checkout` redirige a `/carrito` solo si el carrito ya se leyó del storage (`isHydrated`), está vacío y no hay compra en curso (`status === 'idle'`). Sin esas dos condiciones, recargar la página o el estado intermedio de D38 mandarían al usuario al carrito por error.
+  - `/compra-confirmada` sin `confirmedOrder` (por ejemplo, al recargar) redirige a `/`.
+- **Por qué 7.18.4 y no 8.x:** la 8 exige `react >=19.2.7` y lleva menos tiempo en uso; mismo criterio que D27, D30 y D36.
+- **Propuso:** las rutas en español, yo; los guards, la IA.
+
+## D44 · Los hooks de React puro viven en `core/` (amplía D11)
+- **Contexto:** con la web en marcha, varios hooks de móvil resultaron ser React puro, sin `react-native` ni `react-navigation`.
+- **Decisión:** se mueven a `core/`: `useAppDispatch`/`useAppSelector`, `useDebouncedValue`, `usePaginatedProducts`, `useProductListing`, `useProductDetail`, `useAddToCart(Feedback)`, `useCart`, `useOrderSummary` (regla D38), `useCheckoutForm` (RHF + Zod, con `isBusy` de D38) y `getFirstName`.
+- **Se quedan en cada plataforma:** `useConfirmRemoveItem` (`Alert.alert` en móvil, `ConfirmDialog` en web) y el bloqueo de navegación mientras procesa (`BackHandler` en móvil, `useBlocker` + `beforeunload` en web). La parte compartida es una sola línea (`dispatch(removeItem(id))`) y un adaptador sería sobreingeniería.
+- **Resultado:** web y móvil comparten dominio, estado, persistencia, validaciones **y la lógica de la UI**. Cada plataforma pone las pantallas, los componentes y 2 adaptadores.
+- **Costo:** `core/` depende de `react` y `react-hook-form` (resueltos desde cada app con `paths` y `dedupe`). Las pruebas de hooks que usan RNTL se quedan en móvil, para que `core/` no dependa de `react-native` en sus pruebas.
+- **Verificación:** se movieron primero y se confirmó que las pruebas de móvil y el bundle de Metro seguían en verde antes de construir la web.
+- **Propuso:** yo pedí evaluarlo; la IA hizo el inventario y separó lo que depende de la plataforma.
+
+## D45 · Pruebas web con Vitest y `ConfirmDialog` propio
+- **Vitest 4.1.11** + Testing Library + jsdom, configurado en `vite.config.ts` (reutiliza el alias `@core` y `dedupe`). `npm test` en la raíz ejecuta móvil y web.
+- **`ConfirmDialog` propio** (portal, `role="dialog"`, `aria-modal`, `inert` en el resto, ciclo de Tab, Esc cierra, el foco regresa al botón que lo abrió o al `<h1>` si la fila se eliminó) en lugar de `<dialog>` nativo: jsdom no implementa `showModal()`, así que la prueba del foco atrapado no probaría nada real.
+- **Versiones de web fijadas** a las instaladas, como en móvil. React queda en 19.3.1 en web y 19.2.3 en móvil: no es problema porque cada app resuelve su propio React, y `core/` usa el de la app que lo consume.
+- **Instalación:** npm 10.9.9 truena (`TypeError: edgesOut`) al resolver el peer opcional `@vitejs/devtools` de Vite 8. El lockfile se resolvió una vez con npm 11.6.2; con él, npm 10 hace `npm ci` y `npm install` sin error, sin `--force` ni `--legacy-peer-deps`.
+- **Rol del diálogo:** `alertdialog` (tablero 09), el rol correcto para confirmar una acción destructiva.
+- **Propuso:** la IA; lo aprobé.
+
+## D46 · Filtros del listado en la URL (solo web)
+- **Contexto:** al volver del detalle, la web perdía la búsqueda y la categoría (en móvil se conservan porque el catálogo sigue montado en el stack).
+- **Decisión:** `?q=&categoria=` con `replace`. `useProductListing` (en `core/`) acepta el estado de forma **controlada y opcional**: la web lo conecta a la URL y móvil sigue con su `useState` interno, sin cambios.
+- **Por qué:** en web la URL es el lugar natural para ese estado: sobrevive a recargar, se puede compartir y funciona con el botón atrás. `core/` no depende de React Router.
+- **Limitación:** la página de paginación no está en la URL; al volver se muestra desde la página 1.
+- **Propuso:** yo, al revisar el resultado; la IA lo implementó con un solo setter para evitar que dos actualizaciones de URL seguidas se pisen.
+
+## D47 · Code splitting de checkout y compra confirmada
+- **Decisión:** `lazy()` para esas dos rutas, con fallback de carga. React Hook Form solo se descarga al llegar al checkout.
+- **Resultado:** JS inicial de 178.9 a 164.9 KB gzip (−7.8 %).
+- **Por qué no más:** el resto del peso es `react-dom`, `react-router`, Zod (necesario para validar la API en `core/`) y RTK, que se usan desde la primera pantalla.
+- **Propuso:** yo, a partir del aviso de Vite.
+
+## D48 · Sin selector de cantidad en el detalle
+- **Contexto:** el tablero web 18 muestra un selector de cantidad en el detalle.
+- **Decisión:** no se implementa: "Agregar al carrito" suma de uno en uno, igual que en móvil, y la cantidad se ajusta en el carrito.
+- **Cómo se agregaría:** una regla `addItem(product, quantity)` en `cart.rules.ts` con su prueba (respetando el tope de 99), y el `QuantityStepper` existente en el detalle de ambas plataformas.
+- **Propuso:** la IA lo señaló; decidí mantener la coherencia entre plataformas.
+
+## D49 · Web: botones de la tarjeta con container query y checkout en orden de lectura
+- **Tarjeta:** `@container` en la tarjeta; los botones van lado a lado si mide ≥ 272 px y se apilan si es más angosta. Los botones nunca truncan su texto (`whitespace-nowrap` en lugar de `truncate`).
+- **Por qué container query:** el ancho de la tarjeta depende de cuántas columnas hay (4/3/2), no del ancho de la ventana. Con media queries se cortaban en tres rangos distintos.
+- **Checkout en una columna:** primero "Datos de contacto", después el resumen y al final "Confirmar compra", igual que en móvil. **Desviación del tablero 20**, que ponía el resumen primero con `order: -1`.
+- **Por qué:** el usuario no debe ver el botón de confirmar antes de llenar sus datos, y el orden de Tab debe seguir el orden visual (por eso no se usa CSS `order`).
+- **Propuso:** yo, al revisar la web en Chrome; la IA encontró los otros rangos afectados y la causa (`order-first`).
 
 ---
 

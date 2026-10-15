@@ -1,2 +1,35 @@
 @import 'tailwindcss';
 @import '../../design/tokens.css';
+
+@layer base {
+  body {
+    @apply bg-background font-sans text-text antialiased;
+  }
+}
+
+/* 17-Web-Listado: 3 px primary ring, 2 px offset, on keyboard focus only. */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* Same ring for controls on the primary header. */
+@utility focus-ring-inverse {
+  &:focus-visible {
+    outline: 3px solid var(--color-primary-foreground);
+    outline-offset: 2px;
+  }
+}
+
+/* Page container of the web boards: 1280 max, 32 px sides (16 px up to 640). */
+@utility page-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 16px;
+  @media (width > 640px) {
+    padding-inline: 32px;
+  }
+}

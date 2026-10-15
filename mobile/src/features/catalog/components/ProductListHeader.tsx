@@ -1,16 +1,14 @@
 import { View, type LayoutChangeEvent } from 'react-native';
+import type { CategoryOption } from '@core/catalog/categoryLabels';
 import { AppText } from '../../../shared/components/atoms/AppText';
-import {
-  CategoryChips,
-  type CategoryChipOption,
-} from '../../../shared/components/molecules/CategoryChips';
+import { CategoryChips } from '../../../shared/components/molecules/CategoryChips';
 import { SearchBar } from '../../../shared/components/molecules/SearchBar';
 
 export interface ProductListHeaderProps {
   searchText: string;
   onChangeSearchText: (text: string) => void;
   onClearSearch: () => void;
-  categoryOptions: readonly CategoryChipOption[];
+  categoryOptions: readonly CategoryOption[];
   selectedCategory: string | null;
   onSelectCategory: (category: string | null) => void;
   /** null while there is no data (loading or error): the count is hidden. */

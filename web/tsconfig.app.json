@@ -22,7 +22,10 @@
       "zod": ["./node_modules/zod"],
       "@reduxjs/toolkit": ["./node_modules/@reduxjs/toolkit"],
       "@reduxjs/toolkit/*": ["./node_modules/@reduxjs/toolkit/*"],
-      "react-redux": ["./node_modules/react-redux"]
+      "react-redux": ["./node_modules/react-redux"],
+      "react": ["./node_modules/@types/react"],
+      "react-hook-form": ["./node_modules/react-hook-form"],
+      "@hookform/resolvers/*": ["./node_modules/@hookform/resolvers/*"]
     },
 
     /* Linting */

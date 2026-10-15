@@ -94,7 +94,7 @@ Repositorio único, **sin npm workspaces** (evita problemas de hoisting con el a
 ### Resolución de `core/`
 `core/` no tiene `package.json` ni `node_modules`. Sus imports (`zod`, `@reduxjs/toolkit`) se resuelven desde la app que lo consume:
 - **Metro:** `watchFolders: [<ruta a core>, <ruta a design>]` y `resolver.nodeModulesPaths: [<mobile>/node_modules]`.
-- **Vite:** alias `@core` y `resolve.dedupe` para `react`, `react-redux`, `@reduxjs/toolkit`, `zod`.
+- **Vite:** alias `@core` y `resolve.dedupe` para `react`, `react-redux`, `@reduxjs/toolkit`, `zod`, `react-hook-form` y `@hookform/resolvers`.
 - **TypeScript:** `paths` con `@core/*` en el `tsconfig` de cada app, más `paths` hacia los `node_modules` de esa app para las dependencias que usa `core/`. `core/tsconfig.json` existe solo para el editor.
 - **Babel (móvil):** `babel-plugin-module-resolver` con el alias `@core`, porque Metro no lee los `paths` de TypeScript.
 - **Jest (móvil):** `roots` incluye `../core`, con `moduleNameMapper` para `@core` y transformación de los archivos de `core/`.
@@ -104,7 +104,7 @@ Repositorio único, **sin npm workspaces** (evita problemas de hoisting con el a
 
 ## 4. Reglas de arquitectura (Feature-Driven + Clean)
 
-1. **`core/` es independiente de la plataforma:** nunca importa `react-native`, `react-dom`, componentes, JSX, `window` ni `document`. Las dependencias de plataforma entran por interfaces (por ejemplo, `StorageAdapter`). **Sí puede usar `@reduxjs/toolkit/query/react`** para generar los hooks de RTK Query una sola vez: React es agnóstico de plataforma y ambas apps son React.
+1. **`core/` es independiente de la plataforma:** nunca importa `react-native`, `react-dom`, componentes, JSX, `window` ni `document`. Las dependencias de plataforma entran por interfaces (por ejemplo, `StorageAdapter`). **Sí puede usar `@reduxjs/toolkit/query/react`** para generar los hooks de RTK Query una sola vez: React es agnóstico de plataforma y ambas apps son React. **También contiene los hooks de React puro** que usan ambas apps (`core/*/hooks/`: listado, paginación, detalle, carrito, checkout con `react-hook-form`). Lo que depende de la plataforma (`Alert`, `BackHandler`, diálogos del DOM, `useBlocker`) se queda en cada app (D44).
 2. **Dirección de dependencias:** `features → shared → core`. `core` no conoce a nadie.
 3. **Los features no se importan entre sí**, salvo por su `index.ts` público.
 4. **Las pantallas componen.** La lógica vive en hooks, selectores o `core/`. Una pantalla no hace cálculos ni llamadas directas.
@@ -121,7 +121,7 @@ Repositorio único, **sin npm workspaces** (evita problemas de hoisting con el a
 - **Eliminar desde el stepper:** cuando la cantidad es 1, el botón **−** del `QuantityStepper` se reemplaza por un ícono de **eliminar** (color `danger`, `accessibilityLabel` "Eliminar producto"). Al tocarlo se pide **confirmación** antes de llamar a `removeItem`. El botón **Eliminar** de la fila sigue disponible en cualquier cantidad y también confirma.
 - **Confirmación por plataforma:** en móvil, `Alert.alert` nativo encapsulado en el hook `useConfirmRemoveItem`; en web, un componente `ConfirmDialog` propio. No se comparte UI entre plataformas.
 - **Caché por sesión:** "una sola llamada" significa una por sesión de la app. La caché de RTK Query no se persiste; no hay modo offline del catálogo.
-- **Deep links:** no se configura linking en móvil. El fallback `getProductById` existe porque en **web** sí se puede abrir `/product/:id` directamente.
+- **Deep links:** no se configura linking en móvil. El fallback `getProductById` existe porque en **web** sí se puede abrir `/producto/:id` directamente. Rutas web en español: `/`, `/producto/:id`, `/carrito`, `/checkout`, `/compra-confirmada` (D43).
 - **Checkout:** formulario de contacto validado con Zod → resumen → `confirmOrder` simula una espera de ~1.5 s → estado `confirmed` con `confirmedOrder` (`orderNumber` `MS-` + 5 dígitos, `contact`, `totalItems`, `totalInCents`, tomados antes de limpiar) → limpia el carrito. `condition` evita el doble envío y la compra con carrito vacío (D25).
 - **Validación de la API:** `rawResponseSchema` + `catchSchemaFailure` de RTK Query, que devuelven un error controlado; `transformResponse` solo convierte a `CatalogProduct` (D24). `/products/:id` responde `200` con cuerpo vacío si no existe: se trata como `PRODUCT_NOT_FOUND`.
 - **Entorno:** `core/` no usa `__DEV__`, `process.env` ni `import.meta.env`. Cada app pasa `isDevelopment` a `createAppStore` (`__DEV__` en móvil, `import.meta.env.DEV` en web) (D26).

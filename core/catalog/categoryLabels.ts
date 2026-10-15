@@ -1,3 +1,9 @@
+/** A category value from the API with its Spanish label, for filter chips. */
+export interface CategoryOption {
+  value: string;
+  label: string;
+}
+
 /**
  * Spanish labels for the API categories. Keys keep the API value as-is,
  * including its "jewelery" misspelling: only the label changes.

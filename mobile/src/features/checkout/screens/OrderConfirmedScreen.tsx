@@ -6,12 +6,11 @@ import { AppText } from '../../../shared/components/atoms/AppText';
 import { Button } from '../../../shared/components/atoms/Button';
 import { Price } from '../../../shared/components/atoms/Price';
 import { AppHeader } from '../../../shared/components/molecules/AppHeader';
-import { useAppDispatch } from '../../../shared/hooks/useAppDispatch';
-import { useAppSelector } from '../../../shared/hooks/useAppSelector';
+import { useAppDispatch, useAppSelector } from '@core/store/hooks';
 import { useTokenColor } from '../../../shared/hooks/useTokenColor';
 import type { RootStackScreenProps } from '../../../shared/navigation/types';
 import { getLegacyShadowStyle } from '../../../shared/platform/shadows';
-import { getFirstName } from '../getFirstName';
+import { getFirstName } from '@core/checkout/getFirstName';
 import { resetToCatalog } from '../navigation/checkoutRoutes';
 
 /** 13-Checkout-Confirmado. Reads the snapshot saved before the cart was cleared (D25). */

@@ -3,9 +3,9 @@ import {
   selectCartItems,
   selectTotalInCents,
   selectTotalItems,
-} from '@core/cart/cart.selectors';
-import type { CartItem } from '@core/cart/cart.schema';
-import { useAppSelector } from '../../../shared/hooks/useAppSelector';
+} from '../../cart/cart.selectors';
+import type { CartItem } from '../../cart/cart.schema';
+import { useAppSelector } from '../../store/hooks';
 
 export interface OrderSummaryData {
   items: readonly CartItem[];

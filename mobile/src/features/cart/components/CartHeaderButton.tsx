@@ -4,7 +4,7 @@ import { ShoppingCart } from 'lucide-react-native';
 import { selectTotalItems } from '@core/cart/cart.selectors';
 import { Badge } from '../../../shared/components/atoms/Badge';
 import { IconButton } from '../../../shared/components/atoms/IconButton';
-import { useAppSelector } from '../../../shared/hooks/useAppSelector';
+import { useAppSelector } from '@core/store/hooks';
 
 function getCartLabel(totalItems: number): string {
   return `Carrito, ${totalItems} ${totalItems === 1 ? 'producto' : 'productos'}`;

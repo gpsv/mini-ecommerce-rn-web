@@ -19,7 +19,10 @@
       "zod": ["../mobile/node_modules/zod"],
       "@reduxjs/toolkit": ["../mobile/node_modules/@reduxjs/toolkit"],
       "@reduxjs/toolkit/*": ["../mobile/node_modules/@reduxjs/toolkit/*"],
-      "react-redux": ["../mobile/node_modules/react-redux"]
+      "react-redux": ["../mobile/node_modules/react-redux"],
+      "react": ["../mobile/node_modules/@types/react"],
+      "react-hook-form": ["../mobile/node_modules/react-hook-form"],
+      "@hookform/resolvers/*": ["../mobile/node_modules/@hookform/resolvers/*"]
     }
   },
   "include": ["**/*.ts"]

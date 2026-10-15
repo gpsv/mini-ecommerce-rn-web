@@ -5,7 +5,7 @@ export const PAGE_SIZE = 8;
 export interface PaginatedItems<T> {
   visibleItems: T[];
   hasMore: boolean;
-  /** For FlatList onEndReached; does nothing once every item is visible. */
+  /** For FlatList onEndReached (mobile) or an IntersectionObserver (web); does nothing once every item is visible. */
   loadMore: () => void;
 }
 

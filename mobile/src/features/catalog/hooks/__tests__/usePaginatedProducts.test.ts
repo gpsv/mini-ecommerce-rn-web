@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-native';
-import { PAGE_SIZE, usePaginatedProducts } from '../usePaginatedProducts';
+import { PAGE_SIZE, usePaginatedProducts } from '@core/catalog/hooks/usePaginatedProducts';
 
 const range = (length: number) => Array.from({ length }, (_, index) => index + 1);
 

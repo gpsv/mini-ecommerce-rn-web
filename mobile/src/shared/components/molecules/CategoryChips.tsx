@@ -1,13 +1,9 @@
 import { Pressable, ScrollView, Text } from 'react-native';
+import type { CategoryOption } from '@core/catalog/categoryLabels';
 import { useTokenColor } from '../../hooks/useTokenColor';
 
-export interface CategoryChipOption {
-  value: string;
-  label: string;
-}
-
 export interface CategoryChipsProps {
-  options: readonly CategoryChipOption[];
+  options: readonly CategoryOption[];
   /** null means "Todas". */
   selectedValue: string | null;
   onSelect: (value: string | null) => void;
