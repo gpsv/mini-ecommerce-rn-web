@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Checkout · campo con error</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 360px; height: 800px; overflow: hidden; background: #F6F4F0; font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1C1B1A; display: flex; flex-direction: column">
+  <header style="height: 56px; flex-shrink: 0; background: #1F5FAD; display: flex; align-items: center; gap: 4px; padding: 0 16px 0 4px; box-sizing: border-box">
+    <button aria-label="Regresar" style="width: 48px; height: 48px; padding: 0; border: 0; border-radius: 9999px; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg></button>
+    <h1 style="flex: 1; margin: 0; font-size: 18px; line-height: 24px; font-weight: 600; color: #FFFFFF">Checkout</h1>
+  </header>
+
+  <div style="flex: 1; overflow: hidden; padding: 16px; display: flex; flex-direction: column; gap: 16px">
+    <form style="background: #FFFFFF; border-radius: 16px; box-shadow: 0 1px 2px rgba(28,27,26,0.06), 0 2px 8px rgba(28,27,26,0.06); padding: 16px; display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; color: #1C1B1A">Datos de contacto</h2>
+
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="m-nombre" style="font-size: 14px; line-height: 20px; font-weight: 500; color: #1C1B1A">Nombre</label>
+        <input id="m-nombre" type="text" value="María López" autocomplete="name" style="height: 48px; padding: 0 14px; box-sizing: border-box; border: 1px solid #8A847C; border-radius: 10px; background: #FFFFFF; font-size: 16px; color: #1C1B1A; outline: none">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="m-correo" style="font-size: 14px; line-height: 20px; font-weight: 500; color: #1C1B1A">Correo</label>
+        <input id="m-correo" type="email" value="maria.lopez@correo" aria-invalid="true" aria-describedby="m-correo-err" autocomplete="email" style="height: 48px; padding: 0 13px; box-sizing: border-box; border: 2px solid #C0262D; border-radius: 10px; background: #FFFFFF; font-size: 16px; color: #1C1B1A; outline: none">
+        <p id="m-correo-err" style="margin: 0; display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 500; color: #C0262D"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5h.01"></path></svg>Ingresa un correo válido</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="m-tel" style="font-size: 14px; line-height: 20px; font-weight: 500; color: #1C1B1A">Teléfono</label>
+        <input id="m-tel" type="tel" inputmode="numeric" maxlength="10" placeholder="10 dígitos" value="44312345" aria-describedby="m-tel-help" autocomplete="tel" style="height: 48px; padding: 0 13px; box-sizing: border-box; border: 2px solid #1F5FAD; border-radius: 10px; background: #FFFFFF; font-size: 16px; color: #1C1B1A; outline: none; box-shadow: 0 0 0 3px rgba(31,95,173,0.20)">
+        <p id="m-tel-help" style="margin: 0; font-size: 12px; line-height: 16px; font-weight: 500; color: #5E5A55">10 dígitos, sin espacios ni guiones</p>
+      </div>
+    </form>
+
+    <section style="background: #FFFFFF; border-radius: 16px; box-shadow: 0 1px 2px rgba(28,27,26,0.06), 0 2px 8px rgba(28,27,26,0.06); padding: 16px; display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0 0 2px; font-size: 16px; line-height: 22px; font-weight: 600; color: #1C1B1A">Resumen del pedido</h2>
+      <sc-for list="{{lines}}" as="l" hint-placeholder-count="4">
+        <div style="display: flex; gap: 12px; font-size: 14px; line-height: 20px">
+          <span style="flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #1C1B1A"><span style="font-weight: 600">{{l.qty}} ×</span> {{l.title}}</span>
+          <span style="font-weight: 600; color: #1C1B1A">{{l.total}}</span>
+        </div>
+      </sc-for>
+      <hr style="width: 100%; margin: 2px 0; border: 0; border-top: 1px solid #E4DFD7">
+      <div style="display: flex; justify-content: space-between; font-size: 14px; line-height: 20px; color: #5E5A55"><span>Productos</span><span>5</span></div>
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 16px; line-height: 22px; font-weight: 600">Total</span><span style="font-size: 22px; line-height: 28px; font-weight: 800; color: #1C1B1A">$390.20</span></div>
+    </section>
+  </div>
+
+  <div style="height: 80px; flex-shrink: 0; background: #FFFFFF; box-shadow: 0 -2px 12px rgba(28,27,26,0.10); padding: 16px; box-sizing: border-box">
+    <button type="submit" style="width: 100%; height: 48px; border: 0; border-radius: 10px; background: #1F5FAD; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">Confirmar compra</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      lines: [
+        { qty: 1, title: 'Mochila Fjallraven Foldsack No. 1, para laptop de hasta 15 pulgadas', total: '$109.95' },
+        { qty: 1, title: 'Playeras casuales premium slim fit para hombre', total: '$22.30' },
+        { qty: 2, title: 'Disco duro externo WD 4 TB Gaming Drive, compatible con PlayStation 4', total: '$228.00' },
+        { qty: 1, title: 'Chamarra biker de piel sintética con capucha removible para mujer', total: '$29.95' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

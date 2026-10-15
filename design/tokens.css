@@ -1,0 +1,101 @@
+/*
+ * Mi Surtido · Design tokens
+ * Tailwind CSS 4 (web) y Uniwind (React Native). Solo tema claro.
+ *
+ *   @import "tailwindcss";
+ *   @import "./tokens.css";
+ *
+ * Contraste AA verificado (texto normal ≥ 4.5:1):
+ *   primary-foreground / primary ............ 6.4:1
+ *   secondary-foreground / secondary ........ 6.3:1
+ *   price / surface ......................... 5.2:1
+ *   text-muted / surface .................... 6.8:1
+ *   success, danger, warning / blanco ....... ≥ 5.0:1
+ */
+
+@theme {
+  /* ── Tipografía: fuente del sistema (Roboto en Android, system-ui en web) ── */
+  --font-sans: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* ── Colores requeridos ── */
+  --color-primary: #1F5FAD;              /* header, CTA, chip activo, foco */
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #FFE9DA;            /* botón secondary (“Ver detalle”), EmptyState carrito */
+  --color-secondary-foreground: #9A3412;
+  --color-background: #F6F4F0;           /* fondo de pantalla */
+  --color-surface: #FFFFFF;              /* tarjetas, barras, fondo de imágenes */
+  --color-text: #1C1B1A;
+  --color-text-muted: #5E5A55;
+  --color-border: #CFC8BD;               /* chips, stepper, separadores (#E4DFD7 = border/60) */
+  --color-success: #1E7A46;
+  --color-danger: #C0262D;
+  --color-warning: #B45309;
+
+  /* ── Colores de apoyo (derivados, opcionales) ── */
+  --color-primary-pressed: #174A87;      /* presionado (RN) */
+  --color-primary-hover: #184F91;        /* hover (web) */
+  --color-primary-soft: #E8EFF8;         /* Badge de categoría, hover ghost */
+  --color-primary-soft-foreground: #1A4F8F;
+  --color-price: #C2410C;                /* Price */
+  --color-cart-badge: #C2410C;           /* CartBadge */
+  --color-input-border: #8A847C;         /* TextField / SearchBar (≥ 3:1 sobre surface) */
+  --color-disabled: #E9E5DF;
+  --color-disabled-foreground: #8A847C;
+  --color-skeleton: #ECE8E2;
+  --color-skeleton-highlight: #F7F4EF;
+  --color-success-soft: #E3F2E9;
+  --color-danger-soft: #FBE7E8;
+
+  /* ── Radios ── */
+  --radius-sm: 6px;      /* skeleton de texto, miniaturas pequeñas */
+  --radius-md: 10px;     /* botones, inputs, stepper, miniaturas */
+  --radius-lg: 16px;     /* tarjetas, filas del carrito, paneles */
+  --radius-full: 9999px; /* chips, badges, IconButton */
+
+  /* ── Espaciado: base 4 px (p-1 = 4, p-2 = 8, p-3 = 12, p-4 = 16, p-6 = 24, p-8 = 32, p-12 = 48) ── */
+  --spacing: 4px;
+  --spacing-touch: 48px;       /* mínimo táctil → h-touch, size-touch */
+  --spacing-header: 56px;      /* AppHeader móvil → h-header */
+  --spacing-bottom-bar: 80px;  /* barra de acción fija (detalle / checkout) → h-bottom-bar */
+  --spacing-gutter: 16px;      /* margen lateral de pantalla móvil → px-gutter */
+
+  /* ── Escala tipográfica: tamaño / interlineado / peso ── */
+  --text-title: 20px;
+  --text-title--line-height: 28px;
+  --text-title--font-weight: 700;
+
+  --text-subtitle: 16px;
+  --text-subtitle--line-height: 22px;
+  --text-subtitle--font-weight: 600;
+
+  --text-body: 14px;
+  --text-body--line-height: 20px;
+  --text-body--font-weight: 400;
+
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 500;
+
+  --text-price: 22px;
+  --text-price--line-height: 28px;
+  --text-price--font-weight: 800;
+
+  /* variantes de Price */
+  --text-price-sm: 18px;
+  --text-price-sm--line-height: 24px;
+  --text-price-sm--font-weight: 800;
+  --text-price-lg: 28px;
+  --text-price-lg--line-height: 34px;
+  --text-price-lg--font-weight: 800;
+  --text-price-xl: 36px;
+  --text-price-xl--line-height: 44px;
+  --text-price-xl--font-weight: 800;
+
+  /* ── Sombras ── */
+  /* Tarjetas. Android: elevation 2 */
+  --shadow-card: 0 1px 2px rgb(28 27 26 / 0.06), 0 2px 8px rgb(28 27 26 / 0.06);
+  /* Hover de tarjeta (solo web) */
+  --shadow-card-hover: 0 4px 8px rgb(28 27 26 / 0.08), 0 12px 28px rgb(28 27 26 / 0.12);
+  /* Barra inferior fija (resumen del carrito, CTA de detalle/checkout). Android: elevation 8 */
+  --shadow-bar: 0 -2px 12px rgb(28 27 26 / 0.10);
+}

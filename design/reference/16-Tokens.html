@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Tokens</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.lbl{font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:11px;line-height:15px;color:#5E5A55}
+.h2{margin:0 0 16px;font-size:22px;line-height:28px;font-weight:700}
+</style>
+</helmet>
+<div style="width: 1200px; min-height: 2100px; box-sizing: border-box; padding: 56px; background: #F6F4F0; font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1C1B1A; display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 40px; align-items: start">
+  <div style="display: flex; flex-direction: column; gap: 40px">
+    <div>
+      <h1 style="margin: 0; font-size: 40px; line-height: 48px; font-weight: 800">Tokens</h1>
+      <p style="margin: 6px 0 0; font-size: 16px; line-height: 24px; color: #5E5A55">Un solo archivo, tokens.css, alimenta el @theme de Tailwind 4 en web y Uniwind en Android.</p>
+    </div>
+
+    <section>
+      <h2 class="h2">Color</h2>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{colors}}" as="c" hint-placeholder-count="12">
+          <div style="background: #FFFFFF; border: 1px solid #E4DFD7; border-radius: 12px; overflow: hidden">
+            <div style="height: 64px; background: {{c.hex}}; border-bottom: 1px solid #EFEBE5; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: {{c.on}}">{{c.sample}}</div>
+            <div style="padding: 8px 10px; display: flex; flex-direction: column; gap: 2px">
+              <span class="lbl" style="color: #1C1B1A; font-weight: 700">{{c.name}}</span>
+              <span class="lbl">{{c.hex}} · {{c.ratio}}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <p class="lbl" style="margin: 10px 0 0">De apoyo: primary-pressed #174A87 · primary-hover #184F91 · primary-soft #E8EFF8 / #1A4F8F · price #C2410C · input-border #8A847C (3.7:1) · skeleton #ECE8E2</p>
+    </section>
+
+    <section>
+      <h2 class="h2">Tipografía · Roboto / system-ui</h2>
+      <div style="background: #FFFFFF; border: 1px solid #E4DFD7; border-radius: 12px; padding: 8px 20px">
+        <sc-for list="{{type}}" as="t" hint-placeholder-count="5">
+          <div style="display: flex; align-items: baseline; gap: 16px; padding: 12px 0; border-bottom: 1px solid #EFEBE5">
+            <span class="lbl" style="width: 150px; flex-shrink: 0">{{t.name}} · {{t.spec}}</span>
+            <span style="font-size: {{t.size}}; line-height: {{t.lh}}; font-weight: {{t.w}}; color: {{t.color}}">{{t.sample}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="h2">Radios</h2>
+      <div style="display: flex; gap: 20px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="width: 88px; height: 64px; background: #FFFFFF; border: 2px solid #1F5FAD; border-radius: 6px"></div><span class="lbl">radius-sm · 6</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="width: 88px; height: 64px; background: #FFFFFF; border: 2px solid #1F5FAD; border-radius: 10px"></div><span class="lbl">radius-md · 10</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="width: 88px; height: 64px; background: #FFFFFF; border: 2px solid #1F5FAD; border-radius: 16px"></div><span class="lbl">radius-lg · 16</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><div style="width: 88px; height: 64px; background: #FFFFFF; border: 2px solid #1F5FAD; border-radius: 9999px"></div><span class="lbl">radius-full</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="h2">Espaciado · base 4 px</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <sc-for list="{{space}}" as="s" hint-placeholder-count="10">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <span class="lbl" style="width: 120px">{{s.name}}</span>
+            <span style="height: 14px; width: {{s.px}}; background: #1F5FAD; border-radius: 3px"></span>
+            <span class="lbl">{{s.px}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="h2">Sombras</h2>
+      <div style="display: flex; gap: 32px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 10px"><div style="width: 180px; height: 110px; background: #FFFFFF; border-radius: 16px; box-shadow: 0 1px 2px rgba(28,27,26,0.06), 0 2px 8px rgba(28,27,26,0.06)"></div><span class="lbl">shadow-card · Android elevation 2</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px"><div style="width: 180px; height: 110px; background: #FFFFFF; border-radius: 16px; box-shadow: 0 4px 8px rgba(28,27,26,0.08), 0 12px 28px rgba(28,27,26,0.12)"></div><span class="lbl">shadow-card-hover · solo web</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px"><div style="width: 220px; height: 110px; border-radius: 12px; overflow: hidden; background: #F6F4F0; display: flex; flex-direction: column; justify-content: flex-end; border: 1px solid #E4DFD7"><div style="height: 48px; background: #FFFFFF; box-shadow: 0 -2px 12px rgba(28,27,26,0.10)"></div></div><span class="lbl">shadow-bar · Android elevation 8</span></div>
+      </div>
+    </section>
+  </div>
+
+  <section style="background: #1C1B1A; color: #EDE9E3; border-radius: 16px; padding: 24px; position: sticky; top: 0">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px"><span style="font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 13px; font-weight: 700; color: #FFFFFF">tokens.css</span><span style="font-size: 12px; color: #A8A29A">@theme · Tailwind 4 / Uniwind</span></div>
+<pre style="margin: 0; font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 11.5px; line-height: 17px; white-space: pre-wrap; color: #EDE9E3">@theme {
+  --font-sans: Roboto, system-ui, -apple-system,
+               "Segoe UI", sans-serif;
+
+  /* Colores requeridos */
+  --color-primary: #1F5FAD;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #FFE9DA;
+  --color-secondary-foreground: #9A3412;
+  --color-background: #F6F4F0;
+  --color-surface: #FFFFFF;
+  --color-text: #1C1B1A;
+  --color-text-muted: #5E5A55;
+  --color-border: #CFC8BD;
+  --color-success: #1E7A46;
+  --color-danger: #C0262D;
+  --color-warning: #B45309;
+
+  /* De apoyo */
+  --color-primary-pressed: #174A87;
+  --color-primary-hover: #184F91;
+  --color-primary-soft: #E8EFF8;
+  --color-primary-soft-foreground: #1A4F8F;
+  --color-price: #C2410C;
+  --color-cart-badge: #C2410C;
+  --color-input-border: #8A847C;
+  --color-disabled: #E9E5DF;
+  --color-disabled-foreground: #8A847C;
+  --color-skeleton: #ECE8E2;
+  --color-skeleton-highlight: #F7F4EF;
+  --color-success-soft: #E3F2E9;
+  --color-danger-soft: #FBE7E8;
+
+  /* Radios */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Espaciado (base 4) */
+  --spacing: 4px;
+  --spacing-touch: 48px;
+  --spacing-header: 56px;
+  --spacing-bottom-bar: 80px;
+  --spacing-gutter: 16px;
+
+  /* Tipografía */
+  --text-title: 20px;
+  --text-title--line-height: 28px;
+  --text-title--font-weight: 700;
+  --text-subtitle: 16px;
+  --text-subtitle--line-height: 22px;
+  --text-subtitle--font-weight: 600;
+  --text-body: 14px;
+  --text-body--line-height: 20px;
+  --text-body--font-weight: 400;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 500;
+  --text-price: 22px;
+  --text-price--line-height: 28px;
+  --text-price--font-weight: 800;
+  --text-price-sm: 18px;   /* lh 24 · 800 */
+  --text-price-lg: 28px;   /* lh 34 · 800 */
+  --text-price-xl: 36px;   /* lh 44 · 800 */
+
+  /* Sombras */
+  --shadow-card: 0 1px 2px rgb(28 27 26 / .06),
+                 0 2px 8px rgb(28 27 26 / .06);
+  --shadow-card-hover: 0 4px 8px rgb(28 27 26 / .08),
+                       0 12px 28px rgb(28 27 26 / .12);
+  --shadow-bar: 0 -2px 12px rgb(28 27 26 / .10);
+}
+
+/* Android: shadow-card → elevation 2
+            shadow-bar  → elevation 8 */</pre>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":2100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      colors: [
+        { name: 'primary', hex: '#1F5FAD', on: '#FFFFFF', sample: 'Aa', ratio: '6.4:1 c/ blanco' },
+        { name: 'primary-foreground', hex: '#FFFFFF', on: '#1F5FAD', sample: 'Aa', ratio: 'sobre primary' },
+        { name: 'secondary', hex: '#FFE9DA', on: '#9A3412', sample: 'Aa', ratio: '6.2:1 c/ fg' },
+        { name: 'secondary-foreground', hex: '#9A3412', on: '#FFFFFF', sample: 'Aa', ratio: 'sobre secondary' },
+        { name: 'background', hex: '#F6F4F0', on: '#1C1B1A', sample: 'Aa', ratio: 'fondo de pantalla' },
+        { name: 'surface', hex: '#FFFFFF', on: '#1C1B1A', sample: 'Aa', ratio: 'tarjetas e imágenes' },
+        { name: 'text', hex: '#1C1B1A', on: '#FFFFFF', sample: 'Aa', ratio: '15.7:1 s/ background' },
+        { name: 'text-muted', hex: '#5E5A55', on: '#FFFFFF', sample: 'Aa', ratio: '6.8:1 s/ surface' },
+        { name: 'border', hex: '#CFC8BD', on: '#1C1B1A', sample: '', ratio: 'decorativo' },
+        { name: 'success', hex: '#1E7A46', on: '#FFFFFF', sample: 'Aa', ratio: '5.4:1 c/ blanco' },
+        { name: 'danger', hex: '#C0262D', on: '#FFFFFF', sample: 'Aa', ratio: '5.9:1 c/ blanco' },
+        { name: 'warning', hex: '#B45309', on: '#FFFFFF', sample: 'Aa', ratio: '5.0:1 c/ blanco' }
+      ],
+      type: [
+        { name: 'title', spec: '20/28 · 700', size: '20px', lh: '28px', w: 700, color: '#1C1B1A', sample: 'Tu carrito está vacío' },
+        { name: 'subtitle', spec: '16/22 · 600', size: '16px', lh: '22px', w: 600, color: '#1C1B1A', sample: 'Resumen del pedido' },
+        { name: 'body', spec: '14/20 · 400', size: '14px', lh: '20px', w: 400, color: '#1C1B1A', sample: 'Chamarra de algodón para hombre, ideal para el frío' },
+        { name: 'caption', spec: '12/16 · 500', size: '12px', lh: '16px', w: 500, color: '#5E5A55', sample: '20 productos · Ropa de mujer' },
+        { name: 'price', spec: '22/28 · 800', size: '22px', lh: '28px', w: 800, color: '#C2410C', sample: '$109.95' }
+      ],
+      space: [
+        { name: '1 · 4', px: '4px' }, { name: '2 · 8', px: '8px' }, { name: '3 · 12', px: '12px' },
+        { name: '4 · 16 (gutter)', px: '16px' }, { name: '5 · 20', px: '20px' }, { name: '6 · 24', px: '24px' },
+        { name: '8 · 32', px: '32px' }, { name: '12 · 48 (touch)', px: '48px' }, { name: '14 · 56 (header)', px: '56px' },
+        { name: '20 · 80 (bottom-bar)', px: '80px' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

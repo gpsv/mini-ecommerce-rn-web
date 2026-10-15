@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Detalle · agregado al carrito</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 360px; height: 800px; overflow: hidden; background: #F6F4F0; font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1C1B1A; display: flex; flex-direction: column; position: relative">
+  <header style="height: 56px; flex-shrink: 0; background: #1F5FAD; display: flex; align-items: center; gap: 4px; padding: 0 4px; box-sizing: border-box">
+    <button aria-label="Regresar" style="width: 48px; height: 48px; padding: 0; border: 0; border-radius: 9999px; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg></button>
+    <h1 style="flex: 1; margin: 0; font-size: 18px; line-height: 24px; font-weight: 600; color: #FFFFFF">Detalle</h1>
+    <button aria-label="Carrito, 6 productos" style="position: relative; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 9999px; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.3a2 2 0 0 0 2-1.5L22 7H6"></path></svg>
+      <span style="position: absolute; top: 4px; right: 2px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 9999px; border: 2px solid #1F5FAD; background: #C2410C; color: #FFFFFF; font-size: 11px; line-height: 16px; font-weight: 700; text-align: center">6</span>
+    </button>
+  </header>
+
+  <div style="flex: 1; overflow: hidden">
+    <div style="height: 300px; background: #FFFFFF; padding: 24px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #EFEBE5">
+      <img src="/_blob/0b62e2dc60bd25a63ca2ec8a1610a472" alt="Pulsera de cadena Legends Naga en oro y plata" style="max-width: 100%; max-height: 100%; object-fit: contain">
+    </div>
+    <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px">
+      <span style="align-self: flex-start; padding: 2px 8px; border-radius: 9999px; background: #E8EFF8; color: #1A4F8F; font-size: 12px; line-height: 16px; font-weight: 500">Joyería</span>
+      <h2 style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: #1C1B1A">Pulsera de cadena John Hardy Legends Naga en oro y plata con estación de dragón para mujer</h2>
+      <p style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 800; color: #C2410C">$695.00</p>
+      <hr style="width: 100%; margin: 8px 0; border: 0; border-top: 1px solid #E4DFD7">
+      <h3 style="margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; color: #1C1B1A">Descripción</h3>
+      <p style="margin: 0; font-size: 14px; line-height: 22px; color: #1C1B1A">De nuestra colección Legends, la Naga está inspirada en el mítico dragón de agua que protege la perla del océano. Úsala hacia adentro para recibir amor y abundancia, o hacia afuera para protección.</p>
+    </div>
+  </div>
+
+  <div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 92px; min-height: 48px; padding: 0 4px 0 16px; box-sizing: border-box; border-radius: 10px; background: #1C1B1A; color: #FFFFFF; display: flex; align-items: center; justify-content: space-between; gap: 8px; box-shadow: 0 4px 16px rgba(28,27,26,0.24)">
+    <span style="font-size: 14px; line-height: 20px">Se agregó al carrito</span>
+    <a href="Carrito.dc.html" style="height: 48px; padding: 0 12px; display: flex; align-items: center; color: #A9C8F2; font-size: 14px; font-weight: 600; text-decoration: none">Ver carrito</a>
+  </div>
+
+  <div style="height: 80px; flex-shrink: 0; background: #FFFFFF; box-shadow: 0 -2px 12px rgba(28,27,26,0.10); padding: 16px; box-sizing: border-box">
+    <button aria-live="polite" style="width: 100%; height: 48px; border: 0; border-radius: 10px; background: #1E7A46; color: #FFFFFF; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+      Agregado
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+    </button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Listado · cargando más</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .9s linear infinite}
+@keyframes shimmer{0%{background-position:-360px 0}100%{background-position:360px 0}}
+.sk{background:linear-gradient(90deg,#ECE8E2 0%,#F7F4EF 50%,#ECE8E2 100%);background-size:720px 100%;animation:shimmer 1.4s linear infinite}
+</style>
+</helmet>
+<div style="width: 360px; height: 800px; overflow: hidden; background: #F6F4F0; font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1C1B1A; display: flex; flex-direction: column">
+  <header style="height: 56px; flex-shrink: 0; background: #1F5FAD; display: flex; align-items: center; justify-content: space-between; padding: 0 4px 0 16px; box-sizing: border-box; position: relative; z-index: 1; box-shadow: 0 2px 6px rgba(28,27,26,0.18)">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span style="width: 32px; height: 32px; border-radius: 10px; background: #FFFFFF; color: #1F5FAD; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V20h14V9.5"></path><path d="M10 20v-6h4v6"></path></svg></span>
+      <span style="font-size: 20px; line-height: 28px; font-weight: 700; color: #FFFFFF">Mi Surtido</span>
+    </div>
+    <button aria-label="Carrito, 5 productos" style="position: relative; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 9999px; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.3a2 2 0 0 0 2-1.5L22 7H6"></path></svg>
+      <span style="position: absolute; top: 4px; right: 2px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 9999px; border: 2px solid #1F5FAD; background: #C2410C; color: #FFFFFF; font-size: 11px; line-height: 16px; font-weight: 700; text-align: center">5</span>
+    </button>
+  </header>
+
+  <div style="flex: 1; overflow: hidden">
+    <div style="margin-top: -190px; padding: 0 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+      <sc-for list="{{products}}" as="p" hint-placeholder-count="4">
+        <article style="background: #FFFFFF; border-radius: 16px; box-shadow: 0 1px 2px rgba(28,27,26,0.06), 0 2px 8px rgba(28,27,26,0.06); overflow: hidden; display: flex; flex-direction: column">
+          <div style="height: 132px; padding: 12px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: #FFFFFF; border-bottom: 1px solid #EFEBE5">
+            <img src="{{p.img}}" alt="{{p.title}}" style="max-width: 100%; max-height: 100%; object-fit: contain">
+          </div>
+          <div style="padding: 10px; display: flex; flex-direction: column; gap: 6px; flex: 1">
+            <span style="align-self: flex-start; padding: 2px 8px; border-radius: 9999px; background: #E8EFF8; color: #1A4F8F; font-size: 12px; line-height: 16px; font-weight: 500">{{p.cat}}</span>
+            <h3 style="margin: 0; height: 40px; font-size: 14px; line-height: 20px; font-weight: 500; color: #1C1B1A; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">{{p.title}}</h3>
+            <p style="margin: 0; font-size: 22px; line-height: 28px; font-weight: 800; color: #C2410C">{{p.price}}</p>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px">
+              <button style="height: 40px; border: 0; border-radius: 10px; background: #FFE9DA; color: #9A3412; font-size: 14px; font-weight: 600; cursor: pointer">Ver detalle</button>
+              <button style="height: 40px; border: 0; border-radius: 10px; background: #1F5FAD; color: #FFFFFF; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Agregar</button>
+            </div>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+
+    <div role="status" style="height: 64px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #5E5A55; font-size: 14px; line-height: 20px; font-weight: 500">
+      <svg class="spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#D6DFEC"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#1F5FAD"></path></svg>
+      Cargando más productos…
+    </div>
+
+    <div aria-hidden="true" style="padding: 0 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+      <div style="background: #FFFFFF; border-radius: 16px; overflow: hidden"><div class="sk" style="height: 132px"></div><div style="padding: 10px"><div class="sk" style="width: 84px; height: 20px; border-radius: 9999px"></div></div></div>
+      <div style="background: #FFFFFF; border-radius: 16px; overflow: hidden"><div class="sk" style="height: 132px"></div><div style="padding: 10px"><div class="sk" style="width: 84px; height: 20px; border-radius: 9999px"></div></div></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var B = '/_blob/';
+    return {
+      products: [
+        { img: B + '84328bc070786a645c70b60a3ab1e257', cat: 'Joyería', title: 'Anillo petite micropavé de oro sólido', price: '$168.00' },
+        { img: B + '2ba5a5488b647cd63d3802d02a424e5d', cat: 'Joyería', title: 'Anillo princesa chapado en oro blanco', price: '$9.99' },
+        { img: B + '6ba07928be2f98a15f4d103ee0dcb694', cat: 'Electrónica', title: 'Disco duro externo portátil WD 2 TB Elements, USB 3.0', price: '$64.00' },
+        { img: B + '660f9a7cd4ce223a880db4b5cdb7bd4d', cat: 'Electrónica', title: 'SSD interno SanDisk SSD PLUS de 1 TB, SATA III 6 Gb/s', price: '$109.00' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

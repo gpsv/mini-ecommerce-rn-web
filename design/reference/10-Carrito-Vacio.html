@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Carrito vacío</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 360px; height: 800px; overflow: hidden; background: #F6F4F0; font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1C1B1A; display: flex; flex-direction: column">
+  <header style="height: 56px; flex-shrink: 0; background: #1F5FAD; display: flex; align-items: center; gap: 4px; padding: 0 16px 0 4px; box-sizing: border-box">
+    <button aria-label="Regresar" style="width: 48px; height: 48px; padding: 0; border: 0; border-radius: 9999px; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg></button>
+    <h1 style="flex: 1; margin: 0; font-size: 18px; line-height: 24px; font-weight: 600; color: #FFFFFF">Mi carrito</h1>
+  </header>
+
+  <section style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 32px 72px; gap: 12px">
+    <span style="width: 96px; height: 96px; border-radius: 9999px; background: #FFE9DA; color: #C2410C; display: flex; align-items: center; justify-content: center; margin-bottom: 8px">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.3a2 2 0 0 0 2-1.5L22 7H6"></path></svg>
+    </span>
+    <h2 style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: #1C1B1A">Tu carrito está vacío</h2>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: #5E5A55">Explora el catálogo y agrega lo que te guste.</p>
+    <a href="Main.dc.html" style="margin-top: 8px; height: 48px; padding: 0 24px; border-radius: 10px; background: #1F5FAD; color: #FFFFFF; font-size: 16px; font-weight: 600; display: flex; align-items: center; text-decoration: none">Ver productos</a>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

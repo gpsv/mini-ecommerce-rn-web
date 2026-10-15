@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Listado · cargando</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+@keyframes shimmer{0%{background-position:-360px 0}100%{background-position:360px 0}}
+.sk{background:linear-gradient(90deg,#ECE8E2 0%,#F7F4EF 50%,#ECE8E2 100%);background-size:720px 100%;animation:shimmer 1.4s linear infinite}
+</style>
+</helmet>
+<div style="width: 360px; height: 800px; overflow: hidden; background: #F6F4F0; font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1C1B1A; display: flex; flex-direction: column">
+  <header style="height: 56px; flex-shrink: 0; background: #1F5FAD; display: flex; align-items: center; justify-content: space-between; padding: 0 4px 0 16px; box-sizing: border-box">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span style="width: 32px; height: 32px; border-radius: 10px; background: #FFFFFF; color: #1F5FAD; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V20h14V9.5"></path><path d="M10 20v-6h4v6"></path></svg></span>
+      <span style="font-size: 20px; line-height: 28px; font-weight: 700; color: #FFFFFF">Mi Surtido</span>
+    </div>
+    <button aria-label="Carrito, 5 productos" style="position: relative; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 9999px; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.3a2 2 0 0 0 2-1.5L22 7H6"></path></svg>
+      <span style="position: absolute; top: 4px; right: 2px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 9999px; border: 2px solid #1F5FAD; background: #C2410C; color: #FFFFFF; font-size: 11px; line-height: 16px; font-weight: 700; text-align: center">5</span>
+    </button>
+  </header>
+
+  <div style="padding: 12px 16px 0">
+    <label style="height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 14px; background: #FFFFFF; border: 1px solid #8A847C; border-radius: 10px; box-sizing: border-box; color: #5E5A55">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <input type="search" placeholder="Buscar por nombre" aria-label="Buscar productos por nombre" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 16px; line-height: 22px; color: #1C1B1A">
+    </label>
+  </div>
+
+  <div style="display: flex; gap: 8px; padding: 12px 16px; overflow: hidden; white-space: nowrap">
+    <button aria-pressed="true" style="flex-shrink: 0; height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid #1F5FAD; background: #1F5FAD; color: #FFFFFF; font-size: 14px; font-weight: 600">Todas</button>
+    <button aria-pressed="false" style="flex-shrink: 0; height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid #CFC8BD; background: #FFFFFF; color: #1C1B1A; font-size: 14px; font-weight: 500">Ropa de hombre</button>
+    <button aria-pressed="false" style="flex-shrink: 0; height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid #CFC8BD; background: #FFFFFF; color: #1C1B1A; font-size: 14px; font-weight: 500">Ropa de mujer</button>
+    <button aria-pressed="false" style="flex-shrink: 0; height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid #CFC8BD; background: #FFFFFF; color: #1C1B1A; font-size: 14px; font-weight: 500">Joyería</button>
+    <button aria-pressed="false" style="flex-shrink: 0; height: 40px; padding: 0 16px; border-radius: 9999px; border: 1px solid #CFC8BD; background: #FFFFFF; color: #1C1B1A; font-size: 14px; font-weight: 500">Electrónica</button>
+  </div>
+
+  <p aria-live="polite" style="margin: 0; padding: 0 16px 8px; font-size: 12px; line-height: 16px; font-weight: 500; color: #5E5A55">Cargando productos…</p>
+
+  <div aria-hidden="true" style="padding: 0 16px 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+    <sc-for list="{{cards}}" as="c" hint-placeholder-count="4">
+      <div style="background: #FFFFFF; border-radius: 16px; box-shadow: 0 1px 2px rgba(28,27,26,0.06), 0 2px 8px rgba(28,27,26,0.06); overflow: hidden; display: flex; flex-direction: column">
+        <div class="sk" style="height: 132px"></div>
+        <div style="padding: 10px; display: flex; flex-direction: column; gap: 6px">
+          <div class="sk" style="width: 84px; height: 20px; border-radius: 9999px"></div>
+          <div class="sk" style="height: 14px; border-radius: 6px; margin-top: 3px"></div>
+          <div class="sk" style="width: 70%; height: 14px; border-radius: 6px; margin-top: 3px"></div>
+          <div class="sk" style="width: 72px; height: 22px; border-radius: 6px; margin-top: 6px"></div>
+          <div class="sk" style="height: 40px; border-radius: 10px; margin-top: 4px"></div>
+          <div class="sk" style="height: 40px; border-radius: 10px; margin-top: 2px"></div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { cards: [1, 2, 3, 4] };
+  }
+}
+</script>
+</body>
+</html>

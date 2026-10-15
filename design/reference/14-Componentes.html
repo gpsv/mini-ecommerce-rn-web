@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Hoja de componentes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .9s linear infinite}
+@keyframes shimmer{0%{background-position:-300px 0}100%{background-position:300px 0}}
+.sk{background:linear-gradient(90deg,#ECE8E2 0%,#F7F4EF 50%,#ECE8E2 100%);background-size:600px 100%;animation:shimmer 1.4s linear infinite}
+.sec{display:flex;align-items:baseline;gap:16px;margin:72px 0 24px;padding-bottom:12px;border-bottom:2px solid #1C1B1A}
+.sec h2{margin:0;font-size:32px;line-height:40px;font-weight:700}
+.sec span{font-size:15px;color:#5E5A55}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.blk{background:#FFFFFF;border:1px solid #E4DFD7;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.name{margin:0;font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:16px;line-height:22px;font-weight:700;color:#1F5FAD}
+.cap{margin:-10px 0 0;font-size:13px;line-height:18px;color:#5E5A55}
+.lbl{font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:11px;line-height:14px;color:#5E5A55}
+.col{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.row{display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap}
+.b{height:44px;padding:0 20px;border:0;border-radius:10px;font-size:15px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+.p{background:#1F5FAD;color:#FFFFFF}.p-pr{background:#174A87;color:#FFFFFF}.p-ld{background:#5B86BD;color:#FFFFFF}
+.s{background:#FFE9DA;color:#9A3412}.s-pr{background:#FFD5BA;color:#9A3412}
+.g{background:transparent;color:#1F5FAD}.g-pr{background:#DCE6F3;color:#1F5FAD}
+.dis{background:#E9E5DF;color:#8A847C}.g-dis{background:transparent;color:#A8A29A}
+.foc{outline:3px solid #1F5FAD;outline-offset:2px}
+.mtx{display:grid;grid-template-columns:120px repeat(5,minmax(0,1fr));gap:16px 20px;align-items:center}
+.mtx .h{font-size:12px;line-height:16px;font-weight:600;color:#5E5A55;text-transform:uppercase;letter-spacing:.6px}
+.ib{width:48px;height:48px;border:0;border-radius:9999px;display:flex;align-items:center;justify-content:center;padding:0}
+.field{display:flex;flex-direction:column;gap:6px;width:100%}
+.label{font-size:14px;line-height:20px;font-weight:500}
+.in{height:48px;padding:0 14px;box-sizing:border-box;border:1px solid #8A847C;border-radius:10px;background:#FFFFFF;font-size:16px;color:#1C1B1A;outline:none;width:100%}
+.card{background:#FFFFFF;border-radius:16px;box-shadow:0 1px 2px rgba(28,27,26,.06),0 2px 8px rgba(28,27,26,.06);overflow:hidden;display:flex;flex-direction:column}
+.chip{flex-shrink:0;height:40px;padding:0 16px;border-radius:9999px;border:1px solid #CFC8BD;background:#FFFFFF;color:#1C1B1A;font-size:14px;font-weight:500}
+.chip.on{background:#1F5FAD;border-color:#1F5FAD;color:#FFFFFF;font-weight:600}
+.step{width:40px;height:40px;border:0;background:#FFFFFF;color:#1F5FAD;display:flex;align-items:center;justify-content:center}
+.step-dis{background:#F3F0EB;color:#B5AFA6}
+.hdr{height:56px;width:360px;background:#1F5FAD;display:flex;align-items:center;box-sizing:border-box;gap:4px}
+.badge-c{position:absolute;top:4px;right:2px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:9999px;border:2px solid #1F5FAD;background:#C2410C;color:#FFFFFF;font-size:11px;line-height:16px;font-weight:700;text-align:center}
+</style>
+</helmet>
+<div style="width: 1600px; min-height: 3600px; box-sizing: border-box; padding: 64px; background: #F6F4F0; font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1C1B1A">
+  <h1 style="margin: 0; font-size: 48px; line-height: 56px; font-weight: 800">Hoja de componentes</h1>
+  <p style="margin: 8px 0 0; font-size: 18px; line-height: 26px; color: #5E5A55">Mi Surtido · React Native (Uniwind) y React (Tailwind CSS 4). Todos los valores salen de tokens.css.</p>
+
+  <!-- ATOMS -->
+  <div class="sec"><h2>Atoms</h2><span>Button · AppText · Price · Badge · IconButton · Spinner · ProductImage · TextField</span></div>
+
+  <section class="blk">
+    <p class="name">Button</p>
+    <p class="cap">variant: primary | secondary | ghost · size: sm | md | lg · estados: normal, presionado, deshabilitado, cargando (+ hover y foco solo en web)</p>
+    <div class="mtx">
+      <span></span><span class="h">Normal</span><span class="h">Presionado / hover</span><span class="h">Foco (web)</span><span class="h">Deshabilitado</span><span class="h">Cargando</span>
+
+      <span class="lbl">primary</span>
+      <button class="b p">Confirmar compra</button>
+      <button class="b p-pr">Confirmar compra</button>
+      <button class="b p foc">Confirmar compra</button>
+      <button class="b dis" disabled>Confirmar compra</button>
+      <button class="b p-ld" disabled aria-busy="true"><svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.35)"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#FFFFFF"></path></svg>Procesando…</button>
+
+      <span class="lbl">secondary</span>
+      <button class="b s">Ver detalle</button>
+      <button class="b s-pr">Ver detalle</button>
+      <button class="b s foc">Ver detalle</button>
+      <button class="b dis" disabled>Ver detalle</button>
+      <button class="b s" disabled aria-busy="true"><svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="rgba(154,52,18,0.25)"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#9A3412"></path></svg>Cargando…</button>
+
+      <span class="lbl">ghost</span>
+      <button class="b g">Limpiar búsqueda</button>
+      <button class="b g-pr">Limpiar búsqueda</button>
+      <button class="b g foc">Limpiar búsqueda</button>
+      <button class="b g-dis" disabled>Limpiar búsqueda</button>
+      <button class="b g" disabled aria-busy="true"><svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#D6DFEC"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#1F5FAD"></path></svg>Cargando…</button>
+    </div>
+    <div class="row" style="margin-top: 8px; padding-top: 20px; border-top: 1px solid #EFEBE5">
+      <div class="col"><button class="b p" style="height: 40px; padding: 0 16px; font-size: 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Agregar</button><span class="lbl">sm · 40 alto · 14/600 · px 16 · hitSlop 4 → 48</span></div>
+      <div class="col"><button class="b p">Reintentar</button><span class="lbl">md · 44 alto · 15/600 · px 20 · hitSlop 2 → 48</span></div>
+      <div class="col"><button class="b p" style="height: 48px; padding: 0 24px; font-size: 16px">Agregar al carrito</button><span class="lbl">lg · 48 alto · 16/600 · px 24 (web: 52)</span></div>
+      <div class="col"><button class="b" style="height: 48px; padding: 0 24px; font-size: 16px; background: #1E7A46; color: #FFFFFF">Agregado<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></button><span class="lbl">lg · confirmación (success, 1.5 s)</span></div>
+    </div>
+  </section>
+
+  <div class="g3" style="margin-top: 24px">
+    <section class="blk">
+      <p class="name">AppText</p>
+      <p class="cap">variant: title | subtitle | body | caption | price</p>
+      <div class="col" style="gap: 14px">
+        <div class="col" style="gap: 2px"><span style="font-size: 20px; line-height: 28px; font-weight: 700">Tu carrito está vacío</span><span class="lbl">title · 20/28 · 700</span></div>
+        <div class="col" style="gap: 2px"><span style="font-size: 16px; line-height: 22px; font-weight: 600">Resumen del pedido</span><span class="lbl">subtitle · 16/22 · 600</span></div>
+        <div class="col" style="gap: 2px"><span style="font-size: 14px; line-height: 20px; font-weight: 400">Explora el catálogo y agrega lo que te guste.</span><span class="lbl">body · 14/20 · 400 (descripción: 14/22)</span></div>
+        <div class="col" style="gap: 2px"><span style="font-size: 12px; line-height: 16px; font-weight: 500; color: #5E5A55">20 productos</span><span class="lbl">caption · 12/16 · 500 · text-muted</span></div>
+        <div class="col" style="gap: 2px"><span style="font-size: 22px; line-height: 28px; font-weight: 800; color: #C2410C">$109.95</span><span class="lbl">price · 22/28 · 800 · price</span></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <p class="name">Price</p>
+      <p class="cap">size: sm (tarjeta) | lg (detalle) | xl (web). Formato: $ + 2 decimales, Intl en-US</p>
+      <div class="col" style="gap: 14px">
+        <div class="col" style="gap: 2px"><span style="font-size: 18px; line-height: 24px; font-weight: 800; color: #C2410C">$7.95</span><span class="lbl">sm · 18/24 · fila de carrito</span></div>
+        <div class="col" style="gap: 2px"><span style="font-size: 22px; line-height: 28px; font-weight: 800; color: #C2410C">$109.95</span><span class="lbl">md · 22/28 · ProductCard</span></div>
+        <div class="col" style="gap: 2px"><span style="font-size: 28px; line-height: 34px; font-weight: 800; color: #C2410C">$695.00</span><span class="lbl">lg · 28/34 · detalle móvil</span></div>
+        <div class="col" style="gap: 2px"><span style="font-size: 36px; line-height: 44px; font-weight: 800; color: #C2410C">$999.99</span><span class="lbl">xl · 36/44 · detalle web</span></div>
+        <div class="col" style="gap: 2px"><span style="font-size: 22px; line-height: 28px; font-weight: 800; color: #1C1B1A">$390.20</span><span class="lbl">tone="total" · color text</span></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <p class="name">Badge</p>
+      <p class="cap">variant: category | count (CartBadge) | success</p>
+      <div class="row" style="gap: 12px">
+        <span style="padding: 2px 8px; border-radius: 9999px; background: #E8EFF8; color: #1A4F8F; font-size: 12px; line-height: 16px; font-weight: 500">Ropa de hombre</span>
+        <span style="padding: 2px 8px; border-radius: 9999px; background: #E8EFF8; color: #1A4F8F; font-size: 12px; line-height: 16px; font-weight: 500">Ropa de mujer</span>
+        <span style="padding: 2px 8px; border-radius: 9999px; background: #E8EFF8; color: #1A4F8F; font-size: 12px; line-height: 16px; font-weight: 500">Joyería</span>
+        <span style="padding: 2px 8px; border-radius: 9999px; background: #E8EFF8; color: #1A4F8F; font-size: 12px; line-height: 16px; font-weight: 500">Electrónica</span>
+      </div>
+      <span class="lbl">category · alto 20 · px 8 · caption · radius-full</span>
+      <div class="row" style="gap: 16px; align-items: center">
+        <span style="min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 9999px; background: #C2410C; color: #FFFFFF; font-size: 11px; line-height: 20px; font-weight: 700; text-align: center">5</span>
+        <span style="min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 9999px; background: #C2410C; color: #FFFFFF; font-size: 11px; line-height: 20px; font-weight: 700; text-align: center">9+</span>
+        <span style="padding: 2px 8px; border-radius: 9999px; background: #E3F2E9; color: #17613A; font-size: 12px; line-height: 16px; font-weight: 600">Agregado</span>
+      </div>
+      <span class="lbl">count · 20×20 mín · 11/700 · oculto cuando es 0 · tope 9+</span>
+    </section>
+
+    <section class="blk">
+      <p class="name">IconButton</p>
+      <p class="cap">48×48 · ícono 24 (20 en filas) · siempre con accessibilityLabel</p>
+      <div class="row" style="align-items: center">
+        <div class="col" style="align-items: center"><span style="background: #1F5FAD; border-radius: 12px; padding: 4px"><button class="ib" aria-label="Regresar" style="background: transparent; color: #FFFFFF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg></button></span><span class="lbl">onPrimary</span></div>
+        <div class="col" style="align-items: center"><button class="ib" aria-label="Eliminar" style="background: transparent; color: #5E5A55"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path></svg></button><span class="lbl">normal</span></div>
+        <div class="col" style="align-items: center"><button class="ib" aria-label="Eliminar" style="background: #FBE7E8; color: #C0262D"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path></svg></button><span class="lbl">presionado</span></div>
+        <div class="col" style="align-items: center"><button class="ib" aria-label="Eliminar" style="background: transparent; color: #5E5A55; outline: 3px solid #1F5FAD; outline-offset: 2px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path></svg></button><span class="lbl">foco</span></div>
+        <div class="col" style="align-items: center"><button class="ib" disabled aria-label="Eliminar" style="background: transparent; color: #C4BEB5"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path></svg></button><span class="lbl">deshab.</span></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <p class="name">Spinner</p>
+      <p class="cap">size: 16 | 20 | 24 | 32 · tone: primary | onPrimary · ActivityIndicator en RN</p>
+      <div class="row" style="align-items: center; gap: 28px">
+        <div class="col" style="align-items: center"><svg class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#D6DFEC"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#1F5FAD"></path></svg><span class="lbl">16</span></div>
+        <div class="col" style="align-items: center"><svg class="spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#D6DFEC"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#1F5FAD"></path></svg><span class="lbl">20</span></div>
+        <div class="col" style="align-items: center"><svg class="spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#D6DFEC"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#1F5FAD"></path></svg><span class="lbl">24</span></div>
+        <div class="col" style="align-items: center"><svg class="spin" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#D6DFEC"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#1F5FAD"></path></svg><span class="lbl">32</span></div>
+        <div class="col" style="align-items: center"><span style="width: 44px; height: 44px; border-radius: 10px; background: #1F5FAD; display: flex; align-items: center; justify-content: center"><svg class="spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.35)"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#FFFFFF"></path></svg></span><span class="lbl">onPrimary</span></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <p class="name">TextField</p>
+      <p class="cap">estados: normal | foco | error (+ deshabilitado) · label siempre visible</p>
+      <div class="field"><label class="label" for="c-n">Nombre</label><input class="in" id="c-n" value="María López"><span class="lbl">normal · borde 1 #8A847C</span></div>
+      <div class="field"><label class="label" for="c-t">Teléfono</label><input class="in" id="c-t" placeholder="10 dígitos" style="border: 2px solid #1F5FAD; padding: 0 13px; box-shadow: 0 0 0 3px rgba(31,95,173,0.20)"><span class="lbl">foco · borde 2 primary + anillo 3 (20 %)</span></div>
+      <div class="field"><label class="label" for="c-e">Correo</label><input class="in" id="c-e" value="maria.lopez@correo" aria-invalid="true" style="border: 2px solid #C0262D; padding: 0 13px"><span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 500; color: #C0262D"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5h.01"></path></svg>Ingresa un correo válido</span></div>
+    </section>
+  </div>
+
+  <section class="blk" style="margin-top: 24px">
+    <p class="name">ProductImage</p>
+    <p class="cap">resizeMode / object-fit: contain sobre surface #FFFFFF · padding 12 (tarjeta) / 24 (detalle) · placeholder si onError</p>
+    <div class="row" style="gap: 24px; align-items: flex-start">
+      <div class="col"><div style="width: 158px; height: 132px; padding: 12px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E4DFD7; border-radius: 12px; display: flex; align-items: center; justify-content: center"><img src="/_blob/94d128ce78f6a2c3d52f6f465a63bf75" alt="Mochila" style="max-width: 100%; max-height: 100%; object-fit: contain"></div><span class="lbl">vertical · contain</span></div>
+      <div class="col"><div style="width: 158px; height: 132px; padding: 12px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E4DFD7; border-radius: 12px; display: flex; align-items: center; justify-content: center"><img src="/_blob/63435f0c65d2c3e5d85d2af2dcaebac9" alt="Monitor curvo" style="max-width: 100%; max-height: 100%; object-fit: contain"></div><span class="lbl">horizontal · contain</span></div>
+      <div class="col"><div style="width: 158px; height: 132px; padding: 12px; box-sizing: border-box; background: #F3F0EB; border: 1px solid #E4DFD7; border-radius: 12px; display: flex; flex-direction: column; gap: 6px; align-items: center; justify-content: center; color: #8A847C"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path><path d="M2 2l20 20"></path></svg><span style="font-size: 12px; line-height: 16px; font-weight: 500; color: #5E5A55">Imagen no disponible</span></div><span class="lbl">error · placeholder</span></div>
+      <div class="col"><div class="sk" style="width: 158px; height: 132px; border-radius: 12px"></div><span class="lbl">cargando · skeleton</span></div>
+      <div class="col"><div style="width: 300px; height: 250px; padding: 24px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E4DFD7; border-radius: 12px; display: flex; align-items: center; justify-content: center"><img src="/_blob/0b62e2dc60bd25a63ca2ec8a1610a472" alt="Pulsera" style="max-width: 100%; max-height: 100%; object-fit: contain"></div><span class="lbl">detalle · 360×300 en móvil (escala 1:1.2 aquí)</span></div>
+    </div>
+  </section>
+
+  <!-- MOLECULES -->
+  <div class="sec"><h2>Molecules</h2><span>QuantityStepper · SearchBar · CategoryChips · LoadingState · ErrorState · EmptyState</span></div>
+
+  <div class="g3">
+    <section class="blk">
+      <p class="name">QuantityStepper</p>
+      <p class="cap">min 1 · en carrito, cantidad 1 cambia − por eliminar (abre confirmación) · botones 40 (hitSlop 4)</p>
+      <div class="row" style="align-items: center">
+        <div class="col"><div style="height: 40px; display: flex; align-items: center; border: 1px solid #CFC8BD; border-radius: 10px; overflow: hidden; background: #FFFFFF"><button class="step step-dis" disabled aria-label="Quitar uno"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button><span style="min-width: 36px; text-align: center; font-size: 16px; font-weight: 600">1</span><button class="step" aria-label="Agregar uno"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button></div><span class="lbl">cantidad = 1 · detalle (− deshab.)</span></div>
+        <div class="col"><div style="height: 40px; display: flex; align-items: center; border: 1px solid #CFC8BD; border-radius: 10px; overflow: hidden; background: #FFFFFF"><button class="step" aria-label="Eliminar producto" style="color: #C0262D"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path></svg></button><span style="min-width: 36px; text-align: center; font-size: 16px; font-weight: 600">1</span><button class="step" aria-label="Agregar uno"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button></div><span class="lbl">cantidad = 1 · carrito (eliminar, danger)</span></div>
+        <div class="col"><div style="height: 40px; display: flex; align-items: center; border: 1px solid #CFC8BD; border-radius: 10px; overflow: hidden; background: #FFFFFF"><button class="step" aria-label="Quitar uno"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button><span style="min-width: 36px; text-align: center; font-size: 16px; font-weight: 600">2</span><button class="step" aria-label="Agregar uno"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button></div><span class="lbl">cantidad &gt; 1</span></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <p class="name">SearchBar</p>
+      <p class="cap">48 alto · debounce 300 ms · botón borrar cuando hay texto</p>
+      <label style="height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 14px; background: #FFFFFF; border: 1px solid #8A847C; border-radius: 10px; box-sizing: border-box; color: #5E5A55"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" placeholder="Buscar por nombre" aria-label="Buscar productos" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 16px"></label>
+      <span class="lbl">vacío</span>
+      <label style="height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 0 0 13px; background: #FFFFFF; border: 2px solid #1F5FAD; border-radius: 10px; box-sizing: border-box; color: #1F5FAD"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" value="mochila" aria-label="Buscar productos" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 16px; color: #1C1B1A"><button aria-label="Borrar búsqueda" style="width: 44px; height: 44px; border: 0; border-radius: 9999px; background: transparent; color: #5E5A55; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"></path></svg></button></label>
+      <span class="lbl">foco + con texto</span>
+    </section>
+
+    <section class="blk">
+      <p class="name">CategoryChips</p>
+      <p class="cap">ScrollView horizontal · 40 alto (hitSlop 4) · gap 8 · aria-pressed</p>
+      <div style="display: flex; gap: 8px; overflow: hidden; white-space: nowrap; margin-right: -24px">
+        <button class="chip on" aria-pressed="true">Todas</button><button class="chip" aria-pressed="false">Ropa de hombre</button><button class="chip" aria-pressed="false">Ropa de mujer</button><button class="chip" aria-pressed="false">Joyería</button>
+      </div>
+      <div class="row" style="gap: 12px; align-items: center">
+        <div class="col"><button class="chip on">Joyería</button><span class="lbl">activo</span></div>
+        <div class="col"><button class="chip">Joyería</button><span class="lbl">inactivo</span></div>
+        <div class="col"><button class="chip" style="background: #E8EFF8; border-color: #1F5FAD; color: #1F5FAD">Joyería</button><span class="lbl">presionado / hover</span></div>
+        <div class="col"><button class="chip" style="outline: 3px solid #1F5FAD; outline-offset: 2px">Joyería</button><span class="lbl">foco</span></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <p class="name">LoadingState</p>
+      <p class="cap">variant: grid (skeleton de 4 tarjetas) | more (pie de lista)</p>
+      <div class="row" style="gap: 12px; align-items: flex-start">
+        <div class="card" style="width: 150px"><div class="sk" style="height: 110px"></div><div style="padding: 10px; display: flex; flex-direction: column; gap: 8px"><div class="sk" style="width: 70px; height: 18px; border-radius: 9999px"></div><div class="sk" style="height: 12px; border-radius: 6px"></div><div class="sk" style="width: 60%; height: 12px; border-radius: 6px"></div><div class="sk" style="height: 36px; border-radius: 10px"></div></div></div>
+        <div class="col" style="gap: 6px"><span class="lbl">grid · shimmer 1.4 s</span><span class="lbl">bloques #ECE8E2 → #F7F4EF</span><span class="lbl">aria-hidden + texto</span><span class="lbl">“Cargando productos…”</span></div>
+      </div>
+      <div role="status" style="height: 56px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #5E5A55; font-size: 14px; font-weight: 500; border-top: 1px dashed #E4DFD7"><svg class="spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#D6DFEC"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="#1F5FAD"></path></svg>Cargando más productos…</div>
+    </section>
+
+    <section class="blk">
+      <p class="name">ErrorState</p>
+      <p class="cap">ícono 72 · título subtitle · body muted · Button md primary</p>
+      <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 8px 0">
+        <span style="width: 72px; height: 72px; border-radius: 9999px; background: #FBE7E8; color: #C0262D; display: flex; align-items: center; justify-content: center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 2l20 20"></path><path d="M8.5 16.5a5 5 0 0 1 7 0"></path><path d="M5 12.9a10 10 0 0 1 5.2-2.7"></path><path d="M19 12.9a10 10 0 0 0-2.1-1.5"></path><path d="M2 8.8a15 15 0 0 1 4.2-2.7"></path><path d="M22 8.8A15 15 0 0 0 11 4.9"></path><path d="M12 20h.01"></path></svg></span>
+        <span style="font-size: 16px; line-height: 22px; font-weight: 600">No pudimos cargar los productos</span>
+        <span style="font-size: 14px; line-height: 20px; color: #5E5A55">Revisa tu conexión a internet e inténtalo de nuevo.</span>
+        <button class="b p" style="margin-top: 4px">Reintentar</button>
+      </div>
+    </section>
+
+    <section class="blk">
+      <p class="name">EmptyState</p>
+      <p class="cap">variant: cart | search · mismo layout que ErrorState</p>
+      <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 8px 0">
+        <span style="width: 72px; height: 72px; border-radius: 9999px; background: #FFE9DA; color: #C2410C; display: flex; align-items: center; justify-content: center"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.3a2 2 0 0 0 2-1.5L22 7H6"></path></svg></span>
+        <span style="font-size: 16px; line-height: 22px; font-weight: 600">Tu carrito está vacío</span>
+        <span style="font-size: 14px; line-height: 20px; color: #5E5A55">Explora el catálogo y agrega lo que te guste.</span>
+        <button class="b p" style="margin-top: 4px">Ver productos</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ORGANISMS -->
+  <div class="sec"><h2>Organisms</h2><span>ProductCard · CartItemRow · CartSummary · OrderSummary · CheckoutSuccess · AppHeader con CartBadge</span></div>
+
+  <div style="display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 24px">
+    <section class="blk">
+      <p class="name">ProductCard</p>
+      <p class="cap">158 × 350 en móvil · normal y presionado (escala 0.98)</p>
+      <div class="row" style="gap: 20px; align-items: flex-start">
+        <sc-for list="{{cards}}" as="c" hint-placeholder-count="2">
+          <div class="col">
+            <article class="card" style="width: 158px; {{c.style}}">
+              <div style="height: 132px; padding: 12px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: #FFFFFF; border-bottom: 1px solid #EFEBE5"><img src="{{c.img}}" alt="{{c.title}}" style="max-width: 100%; max-height: 100%; object-fit: contain"></div>
+              <div style="padding: 10px; display: flex; flex-direction: column; gap: 6px">
+                <span style="align-self: flex-start; padding: 2px 8px; border-radius: 9999px; background: #E8EFF8; color: #1A4F8F; font-size: 12px; line-height: 16px; font-weight: 500">{{c.cat}}</span>
+                <h3 style="margin: 0; height: 40px; font-size: 14px; line-height: 20px; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">{{c.title}}</h3>
+                <p style="margin: 0; font-size: 22px; line-height: 28px; font-weight: 800; color: #C2410C">{{c.price}}</p>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px">
+                  <button class="b s" style="height: 40px; font-size: 14px">Ver detalle</button>
+                  <button class="b p" style="height: 40px; font-size: 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Agregar</button>
+                </div>
+              </div>
+            </article>
+            <span class="lbl">{{c.label}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-direction: column; gap: 24px">
+      <section class="blk">
+        <p class="name">CartItemRow</p>
+        <p class="cap">miniatura 72 · título 2 líneas · precio unitario · QuantityStepper · eliminar 48 · total de línea</p>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+          <sc-for list="{{rows}}" as="it" hint-placeholder-count="2">
+            <div style="background: #FFFFFF; border-radius: 16px; box-shadow: 0 1px 2px rgba(28,27,26,0.06), 0 2px 8px rgba(28,27,26,0.06); border: 1px solid #EFEBE5; padding: 12px 4px 12px 12px; display: flex; gap: 12px; max-width: 328px">
+              <div style="width: 72px; height: 72px; flex-shrink: 0; border: 1px solid #EFEBE5; border-radius: 10px; padding: 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center"><img src="{{it.img}}" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain"></div>
+              <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+                <div style="display: flex; align-items: flex-start; gap: 4px"><h3 style="flex: 1; margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">{{it.title}}</h3><button class="ib" aria-label="Eliminar" style="margin: -12px 0 -8px; background: transparent; color: #5E5A55"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path></svg></button></div>
+                <p style="margin: 0; font-size: 12px; line-height: 16px; font-weight: 500; color: #5E5A55">{{it.unit}} c/u</p>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; padding-right: 8px">
+                  <div style="height: 40px; display: flex; align-items: center; border: 1px solid #CFC8BD; border-radius: 10px; overflow: hidden; background: #FFFFFF">
+                    <sc-if value="{{it.atMin}}" hint-placeholder-val="{{ true }}"><button class="step" aria-label="Eliminar producto" style="color: #C0262D"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path></svg></button></sc-if>
+                    <sc-if value="{{it.canDec}}" hint-placeholder-val="{{ false }}"><button class="step" aria-label="Quitar uno"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button></sc-if>
+                    <span style="min-width: 36px; text-align: center; font-size: 16px; font-weight: 600">{{it.qty}}</span>
+                    <button class="step" aria-label="Agregar uno"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+                  </div>
+                  <p style="margin: 0; font-size: 18px; line-height: 24px; font-weight: 800; color: #C2410C">{{it.total}}</p>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+        <section class="blk">
+          <p class="name">CartSummary</p>
+          <p class="cap">barra fija · 144 alto · sombra bar</p>
+          <div style="background: #FFFFFF; box-shadow: 0 -2px 12px rgba(28,27,26,0.10); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+            <p style="margin: 0; font-size: 14px; line-height: 20px; color: #5E5A55">Productos: 5</p>
+            <div style="display: flex; align-items: baseline; justify-content: space-between"><span style="font-size: 18px; line-height: 24px; font-weight: 600">Total:</span><span style="font-size: 22px; line-height: 28px; font-weight: 800">$390.20</span></div>
+            <button class="b p" style="margin-top: 12px; height: 48px; width: 100%">Ir a checkout</button>
+          </div>
+        </section>
+        <section class="blk">
+          <p class="name">OrderSummary</p>
+          <p class="cap">líneas en 1 renglón con elipsis</p>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; gap: 12px; font-size: 14px; line-height: 20px"><span style="flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap"><b>1 ×</b> Mochila Fjallraven Foldsack No. 1</span><b>$109.95</b></div>
+            <div style="display: flex; gap: 12px; font-size: 14px; line-height: 20px"><span style="flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap"><b>2 ×</b> Disco duro externo WD 4 TB Gaming Drive</span><b>$228.00</b></div>
+            <hr style="width: 100%; margin: 2px 0; border: 0; border-top: 1px solid #E4DFD7">
+            <div style="display: flex; justify-content: space-between; font-size: 14px; color: #5E5A55"><span>Productos</span><span>5</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 16px; font-weight: 600">Total</span><span style="font-size: 22px; line-height: 28px; font-weight: 800">$390.20</span></div>
+          </div>
+        </section>
+        <section class="blk">
+          <p class="name">CheckoutSuccess</p>
+          <p class="cap">ícono 96/64 · número de orden 26/800</p>
+          <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px">
+            <span style="width: 72px; height: 72px; border-radius: 9999px; background: #E3F2E9; display: flex; align-items: center; justify-content: center"><span style="width: 48px; height: 48px; border-radius: 9999px; background: #1E7A46; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></span></span>
+            <span style="font-size: 20px; line-height: 28px; font-weight: 700">¡Compra confirmada!</span>
+            <span style="font-size: 12px; color: #5E5A55">Número de orden</span>
+            <span style="font-size: 22px; line-height: 28px; font-weight: 800">#MS-48213</span>
+            <button class="b p" style="width: 100%; height: 48px; margin-top: 4px">Volver al catálogo</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <section class="blk" style="margin-top: 24px">
+    <p class="name">AppHeader con CartBadge</p>
+    <p class="cap">56 alto · surface primary · variant: home | back · CartBadge oculto con 0, “9+” desde 10</p>
+    <div style="display: grid; grid-template-columns: repeat(4, 360px); gap: 24px">
+      <div class="col">
+        <div class="hdr" style="justify-content: space-between; padding: 0 4px 0 16px"><div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 10px; background: #FFFFFF; color: #1F5FAD; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V20h14V9.5"></path><path d="M10 20v-6h4v6"></path></svg></span><span style="font-size: 20px; font-weight: 700; color: #FFFFFF">Mi Surtido</span></div><button class="ib" aria-label="Carrito, 5 productos" style="position: relative; background: transparent; color: #FFFFFF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.3a2 2 0 0 0 2-1.5L22 7H6"></path></svg><span class="badge-c">5</span></button></div>
+        <span class="lbl">home · badge 5</span>
+      </div>
+      <div class="col">
+        <div class="hdr" style="justify-content: space-between; padding: 0 4px 0 16px"><div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 10px; background: #FFFFFF; color: #1F5FAD; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V20h14V9.5"></path><path d="M10 20v-6h4v6"></path></svg></span><span style="font-size: 20px; font-weight: 700; color: #FFFFFF">Mi Surtido</span></div><button class="ib" aria-label="Carrito vacío" style="background: transparent; color: #FFFFFF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.3a2 2 0 0 0 2-1.5L22 7H6"></path></svg></button></div>
+        <span class="lbl">home · carrito vacío (sin badge)</span>
+      </div>
+      <div class="col">
+        <div class="hdr" style="padding: 0 4px"><button class="ib" aria-label="Regresar" style="background: transparent; color: #FFFFFF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg></button><span style="flex: 1; font-size: 18px; font-weight: 600; color: #FFFFFF">Detalle</span><button class="ib" aria-label="Carrito, más de 9 productos" style="position: relative; background: transparent; color: #FFFFFF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.3a2 2 0 0 0 2-1.5L22 7H6"></path></svg><span class="badge-c">9+</span></button></div>
+        <span class="lbl">back + título + badge 9+</span>
+      </div>
+      <div class="col">
+        <div class="hdr" style="padding: 0 16px 0 4px"><button class="ib" aria-label="Regresar" style="background: transparent; color: #FFFFFF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg></button><span style="flex: 1; font-size: 18px; font-weight: 600; color: #FFFFFF">Mi carrito</span></div>
+        <span class="lbl">back · sin carrito (carrito / checkout)</span>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1600,"height":3600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var B = '/_blob/';
+    return {
+      cards: [
+        { img: B + '94d128ce78f6a2c3d52f6f465a63bf75', cat: 'Ropa de hombre', title: 'Mochila Fjallraven Foldsack No. 1, para laptop de hasta 15 pulgadas', price: '$109.95', style: '', label: 'normal' },
+        { img: B + '84328bc070786a645c70b60a3ab1e257', cat: 'Joyería', title: 'Anillo petite micropavé de oro sólido', price: '$168.00', style: 'transform: scale(0.98); box-shadow: 0 0 0 1px #1F5FAD;', label: 'presionado · escala 0.98' }
+      ],
+      rows: [
+        { img: B + '94d128ce78f6a2c3d52f6f465a63bf75', title: 'Mochila Fjallraven Foldsack No. 1, para laptop de hasta 15 pulgadas', unit: '$109.95', qty: 1, total: '$109.95', atMin: true, canDec: false },
+        { img: B + '6ba07928be2f98a15f4d103ee0dcb694', title: 'Disco duro externo WD 4 TB Gaming Drive, compatible con PlayStation 4', unit: '$114.00', qty: 2, total: '$228.00', atMin: false, canDec: true }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

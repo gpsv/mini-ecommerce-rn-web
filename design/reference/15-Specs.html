@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Notas de especificación</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.mono{font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace}
+.ann{position:absolute;left:336px;display:flex;align-items:center;gap:8px;transform:translateY(-50%)}
+.ann i{display:block;width:28px;border-top:1.5px solid #C2410C}
+.ann span{font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:12px;line-height:16px;color:#1C1B1A;white-space:nowrap}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;line-height:20px}
+.tbl th{text-align:left;font-size:12px;line-height:16px;font-weight:600;color:#5E5A55;text-transform:uppercase;letter-spacing:.5px;padding:0 12px 8px 0;border-bottom:2px solid #1C1B1A}
+.tbl td{padding:9px 12px 9px 0;border-bottom:1px solid #E4DFD7;vertical-align:top}
+.tbl td:first-child{font-weight:600;width:190px}
+.tbl td.v{font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:13px}
+.h2{margin:0 0 14px;font-size:22px;line-height:28px;font-weight:700}
+</style>
+</helmet>
+<div style="width: 1200px; min-height: 1700px; box-sizing: border-box; padding: 56px; background: #F6F4F0; font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1C1B1A">
+  <h1 style="margin: 0; font-size: 40px; line-height: 48px; font-weight: 800">Notas de especificación</h1>
+  <p style="margin: 6px 0 40px; font-size: 16px; line-height: 24px; color: #5E5A55">Medidas en dp (Android) y px (web). Toda medida es múltiplo de 4 salvo bordes de 1–2 px y el ancho fluido de tarjeta.</p>
+
+  <div style="display: grid; grid-template-columns: 520px minmax(0, 1fr); gap: 48px; align-items: start">
+    <section>
+      <h2 class="h2">ProductCard móvil · escala 2×</h2>
+      <div style="position: relative; width: 520px; height: 760px">
+        <div class="mono" style="position: absolute; left: 0; top: 0; width: 316px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: #C2410C"><span style="flex: 1; border-top: 1.5px solid #C2410C"></span>158<span style="flex: 1; border-top: 1.5px solid #C2410C"></span></div>
+        <div style="position: absolute; left: 0; top: 28px; width: 158px; transform: scale(2); transform-origin: top left">
+          <article style="width: 158px; height: 350px; box-sizing: border-box; background: #FFFFFF; border-radius: 16px; box-shadow: 0 1px 2px rgba(28,27,26,0.06), 0 2px 8px rgba(28,27,26,0.06); overflow: hidden; display: flex; flex-direction: column">
+            <div style="height: 132px; padding: 12px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #EFEBE5; background: repeating-linear-gradient(45deg, #FFFFFF 0 6px, #FDF3EC 6px 7px)">
+              <img src="/_blob/94d128ce78f6a2c3d52f6f465a63bf75" alt="Mochila" style="max-width: 100%; max-height: 100%; object-fit: contain">
+            </div>
+            <div style="padding: 10px; display: flex; flex-direction: column; gap: 6px">
+              <span style="align-self: flex-start; padding: 2px 8px; border-radius: 9999px; background: #E8EFF8; color: #1A4F8F; font-size: 12px; line-height: 16px; font-weight: 500">Ropa de hombre</span>
+              <span style="height: 40px; font-size: 14px; line-height: 20px; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">Mochila Fjallraven Foldsack No. 1, para laptop de hasta 15 pulgadas</span>
+              <span style="font-size: 22px; line-height: 28px; font-weight: 800; color: #C2410C">$109.95</span>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px">
+                <span style="height: 40px; border-radius: 10px; background: #FFE9DA; color: #9A3412; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center">Ver detalle</span>
+                <span style="height: 40px; border-radius: 10px; background: #1F5FAD; color: #FFFFFF; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center">+ Agregar</span>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div class="ann" style="top: 160px"><i></i><span>Imagen 158 × 132 · padding 12 · contain</span></div>
+        <div class="ann" style="top: 332px"><i></i><span>Badge 20 alto · px 8</span></div>
+        <div class="ann" style="top: 404px"><i></i><span>Título 2 líneas · 14/20 · alto fijo 40</span></div>
+        <div class="ann" style="top: 484px"><i></i><span>Price 22/28 · 800</span></div>
+        <div class="ann" style="top: 572px"><i></i><span>Button sm secondary · 40 (+4 hitSlop)</span></div>
+        <div class="ann" style="top: 668px"><i></i><span>Button sm primary · 40 (+4 hitSlop)</span></div>
+        <div class="ann" style="top: 724px"><i></i><span>Total 158 × 350 · padding 10 · gap 6</span></div>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-direction: column; gap: 36px">
+      <section>
+        <h2 class="h2">Listado (móvil)</h2>
+        <table class="tbl">
+          <tr><th>Elemento</th><th>Medida</th></tr>
+          <tr><td>Pantalla</td><td class="v">360 × 800 · gutter 16 · fondo background</td></tr>
+          <tr><td>AppHeader</td><td class="v">56 alto · logo 32 · IconButton 48</td></tr>
+          <tr><td>SearchBar</td><td class="v">48 alto · mt 12 · ícono 20 · texto 16</td></tr>
+          <tr><td>CategoryChips</td><td class="v">40 alto · py 12 · gap 8 · px 16</td></tr>
+          <tr><td>Grid</td><td class="v">FlatList numColumns 2 · gap 12 · px 16 · pb 16</td></tr>
+          <tr><td>Tarjeta</td><td class="v">(360 − 32 − 12) / 2 = 158 × 350 · radius 16</td></tr>
+          <tr><td>Imagen tarjeta</td><td class="v">158 × 132 · padding 12 → área útil 134 × 108</td></tr>
+          <tr><td>Paginación</td><td class="v">onEndReached 0.5 · pie 64 alto con Spinner 24</td></tr>
+        </table>
+      </section>
+
+      <section>
+        <h2 class="h2">Detalle</h2>
+        <table class="tbl">
+          <tr><th>Elemento</th><th>Medida</th></tr>
+          <tr><td>Imagen</td><td class="v">360 × 300 · padding 24 → 312 × 252 · contain</td></tr>
+          <tr><td>Contenido</td><td class="v">padding 16 · gap 8 · título 20/28 sin límite</td></tr>
+          <tr><td>Precio</td><td class="v">price-lg 28/34</td></tr>
+          <tr><td>Barra inferior</td><td class="v">80 alto = 16 + Button lg 48 + 16 · elevation 8</td></tr>
+          <tr><td>Snackbar</td><td class="v">48 alto · 12 sobre la barra · 3 s</td></tr>
+          <tr><td>“Agregado ✓”</td><td class="v">success · 1.5 s y vuelve a primary</td></tr>
+        </table>
+      </section>
+
+      <section>
+        <h2 class="h2">Carrito y checkout</h2>
+        <table class="tbl">
+          <tr><th>Elemento</th><th>Medida</th></tr>
+          <tr><td>CartItemRow</td><td class="v">padding 12 (der. 4) · radius 16 · gap 12 · ~128 alto</td></tr>
+          <tr><td>Miniatura</td><td class="v">72 × 72 · padding 6 · radius 10</td></tr>
+          <tr><td>QuantityStepper</td><td class="v">40 alto · botones 40 × 40 · valor 36</td></tr>
+          <tr><td>CartSummary</td><td class="v">144 alto = 16 + 20 + 4 + 28 + 12 + 48 + 16</td></tr>
+          <tr><td>TextField</td><td class="v">label 20 + gap 6 + input 48 (+ 6 + mensaje 16)</td></tr>
+          <tr><td>Barra checkout</td><td class="v">80 alto · Button lg 48</td></tr>
+        </table>
+      </section>
+
+      <section>
+        <h2 class="h2">Web</h2>
+        <table class="tbl">
+          <tr><th>Elemento</th><th>Medida</th></tr>
+          <tr><td>Contenedor</td><td class="v">máx. 1280 · px 32 (16 en ≤ 640) · header 72</td></tr>
+          <tr><td>Grid listado</td><td class="v">4 col / gap 24 · 3 col ≤ 1024 · 2 col ≤ 640</td></tr>
+          <tr><td>Tarjeta web</td><td class="v">≈ 286 ancho · imagen 220 alto · padding 20</td></tr>
+          <tr><td>Imagen detalle</td><td class="v">cuadrada, máx. 560 · padding 56 · 420 alto en ≤ 1024</td></tr>
+          <tr><td>Paneles laterales</td><td class="v">carrito 360 · checkout 400 · sticky top 96</td></tr>
+          <tr><td>Hover / foco</td><td class="v">card −2 px + shadow-card-hover · outline 3 primary, offset 2</td></tr>
+        </table>
+      </section>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":1700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
