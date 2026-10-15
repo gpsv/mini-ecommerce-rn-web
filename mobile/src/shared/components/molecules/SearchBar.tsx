@@ -32,7 +32,7 @@ export function SearchBar({
 
   return (
     <View
-      className={`h-12 flex-row items-center gap-2 rounded-md bg-surface ${borderClass} ${hasText ? 'pr-0' : 'pr-3.5'} ${className}`}
+      className={`min-h-12 flex-row items-center gap-2 rounded-md bg-surface ${borderClass} ${hasText ? 'pr-0' : 'pr-3.5'} ${className}`}
     >
       <Search size={20} color={isFocused ? primaryColor : mutedColor} strokeWidth={2.2} />
       <TextInput
@@ -46,7 +46,7 @@ export function SearchBar({
         returnKeyType="search"
         autoCorrect={false}
         autoCapitalize="none"
-        className="flex-1 h-full p-0 font-sans text-[16px] text-text"
+        className="flex-1 self-stretch p-0 font-sans text-[16px] text-text"
       />
       {hasText ? (
         <IconButton

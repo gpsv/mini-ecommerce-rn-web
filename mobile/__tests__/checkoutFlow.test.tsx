@@ -115,7 +115,7 @@ describe('checkout flow', () => {
     expect(screen.queryByText('¡Compra confirmada!')).toBeNull();
     expect(screen.queryByText('Datos de contacto')).toBeNull();
     expect(screen.queryByText('Mi carrito')).toBeNull();
-    expect(screen.getByText('Mi Surtido')).toBeOnTheScreen();
+    expect(screen.getByText('MiniShop')).toBeOnTheScreen();
     expect(store.getState().checkout).toEqual({ status: 'idle', confirmedOrder: null });
   });
 
@@ -128,7 +128,7 @@ describe('checkout flow', () => {
     await act(() => jest.runOnlyPendingTimersAsync());
 
     expect(screen.queryByText('¡Compra confirmada!')).toBeNull();
-    expect(screen.getByText('Mi Surtido')).toBeOnTheScreen();
+    expect(screen.getByText('MiniShop')).toBeOnTheScreen();
     expect(store.getState().checkout.confirmedOrder).toBeNull();
 
     // Nothing left to go back to: the navigator does not handle the press.

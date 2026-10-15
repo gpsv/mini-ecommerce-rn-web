@@ -49,7 +49,7 @@ export function Snackbar({
           accessibilityRole="button"
           android_ripple={{ color: rippleColor }}
           onPress={onAction}
-          className="h-12 px-3 justify-center rounded-md overflow-hidden active:opacity-80"
+          className="min-h-12 px-3 justify-center rounded-md overflow-hidden active:opacity-80"
         >
           <Text className="font-sans text-[14px] font-semibold text-primary-soft">
             {actionLabel}

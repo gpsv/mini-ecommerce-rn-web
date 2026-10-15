@@ -31,14 +31,14 @@ function CategoryChip({ label, isSelected, onPress }: CategoryChipProps) {
       hitSlop={{ top: 4, bottom: 4 }}
       android_ripple={{ color: rippleColor }}
       onPress={onPress}
-      className={`h-10 px-4 justify-center rounded-full border overflow-hidden ${
+      className={`min-h-10 py-2 px-4 justify-center rounded-full border overflow-hidden ${
         isSelected
           ? 'bg-primary border-primary'
           : 'bg-surface border-border active:bg-primary-soft active:border-primary'
       }`}
     >
       <Text
-        className={`font-sans text-[14px] ${
+        className={`font-sans text-[14px] leading-5 ${
           isSelected ? 'font-semibold text-primary-foreground' : 'font-medium text-text'
         }`}
       >

@@ -53,7 +53,8 @@ function CartItemRowView({
           />
         </View>
         <AppText variant="caption">{`${formatPrice(item.priceInCents)} c/u`}</AppText>
-        <View className="flex-row items-center justify-between gap-2 mt-1 pr-2">
+        {/* Wraps so the subtotal moves below the stepper with large fonts. */}
+        <View className="flex-row flex-wrap items-center justify-between gap-2 mt-1 pr-2">
           <QuantityStepper
             quantity={item.quantity}
             onIncrease={() => onIncrease(item.id)}

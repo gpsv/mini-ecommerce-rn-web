@@ -1,5 +1,11 @@
-import { useCallback } from 'react';
-import { FlatList, Platform, View, type ListRenderItem } from 'react-native';
+import { useCallback, useState } from 'react';
+import {
+  FlatList,
+  Platform,
+  View,
+  type LayoutChangeEvent,
+  type ListRenderItem,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { CatalogProduct } from '@core/catalog/product.schema';
 import { AppHeader } from '../../../shared/components/molecules/AppHeader';
@@ -11,9 +17,8 @@ import { LoadMoreFooter } from '../components/LoadMoreFooter';
 import { ProductCard } from '../components/ProductCard';
 import {
   GRID_COLUMNS,
-  GRID_ROW_HEIGHT,
   LIST_HEADER_HEIGHT,
-  useProductCardWidth,
+  useProductGridLayout,
 } from '../components/productGridLayout';
 import { ProductGridSkeleton } from '../components/ProductGridSkeleton';
 import { ProductListHeader } from '../components/ProductListHeader';
@@ -22,16 +27,10 @@ import { useProductListing, type ListingStatus } from '../hooks/useProductListin
 
 const keyExtractor = (product: CatalogProduct) => String(product.id);
 
-// With numColumns, FlatList passes the row index.
-const getItemLayout = (_data: ArrayLike<CatalogProduct> | null | undefined, index: number) => ({
-  length: GRID_ROW_HEIGHT,
-  offset: LIST_HEADER_HEIGHT + GRID_ROW_HEIGHT * index,
-  index,
-});
-
 interface ListEmptyContentProps {
   status: ListingStatus;
   cardWidth: number;
+  cardHeight: number;
   query: string;
   onRetry: () => void;
   onClearFilters: () => void;
@@ -40,12 +39,13 @@ interface ListEmptyContentProps {
 function ListEmptyContent({
   status,
   cardWidth,
+  cardHeight,
   query,
   onRetry,
   onClearFilters,
 }: ListEmptyContentProps) {
   if (status === 'loading') {
-    return <ProductGridSkeleton cardWidth={cardWidth} />;
+    return <ProductGridSkeleton cardWidth={cardWidth} cardHeight={cardHeight} />;
   }
   if (status === 'error') {
     return (
@@ -69,9 +69,26 @@ function ListEmptyContent({
 
 export function ProductListScreen({ navigation }: RootStackScreenProps<'ProductList'>) {
   const insets = useSafeAreaInsets();
-  const cardWidth = useProductCardWidth();
+  const { cardWidth, cardHeight, cardFontScale, rowHeight } = useProductGridLayout();
   const listing = useProductListing();
   const handleAddToCart = useAddToCart();
+  // Measured, not fixed: it grows with the system font size (D34 risk, P09).
+  const [headerHeight, setHeaderHeight] = useState(LIST_HEADER_HEIGHT);
+
+  const handleHeaderLayout = useCallback((event: LayoutChangeEvent) => {
+    setHeaderHeight(event.nativeEvent.layout.height);
+  }, []);
+
+  // With numColumns, FlatList passes the row index. Every row has the same
+  // height for the current font scale, so the offsets stay exact.
+  const getItemLayout = useCallback(
+    (_data: ArrayLike<CatalogProduct> | null | undefined, index: number) => ({
+      length: rowHeight,
+      offset: headerHeight + rowHeight * index,
+      index,
+    }),
+    [headerHeight, rowHeight],
+  );
 
   const handlePressDetail = useCallback(
     (product: CatalogProduct) =>
@@ -84,11 +101,13 @@ export function ProductListScreen({ navigation }: RootStackScreenProps<'ProductL
       <ProductCard
         product={item}
         width={cardWidth}
+        height={cardHeight}
+        fontScale={cardFontScale}
         onPressDetail={handlePressDetail}
         onAddToCart={handleAddToCart}
       />
     ),
-    [cardWidth, handlePressDetail, handleAddToCart],
+    [cardWidth, cardHeight, cardFontScale, handlePressDetail, handleAddToCart],
   );
 
   return (
@@ -121,14 +140,16 @@ export function ProductListScreen({ navigation }: RootStackScreenProps<'ProductL
             categoryOptions={listing.categoryOptions}
             selectedCategory={listing.category}
             onSelectCategory={listing.setCategory}
-            isLoading={listing.status === 'loading'}
-            totalCount={listing.totalCount}
+            // Only with data: loading and error show their own state below.
+            totalCount={listing.status === 'success' ? listing.totalCount : null}
+            onLayout={handleHeaderLayout}
           />
         }
         ListEmptyComponent={
           <ListEmptyContent
             status={listing.status}
             cardWidth={cardWidth}
+            cardHeight={cardHeight}
             query={listing.query}
             onRetry={listing.retry}
             onClearFilters={listing.clearFilters}

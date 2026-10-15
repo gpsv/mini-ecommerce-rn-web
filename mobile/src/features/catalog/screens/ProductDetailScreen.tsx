@@ -21,7 +21,7 @@ import { useAddToCart } from '../hooks/useAddToCart';
 import { useAddToCartFeedback } from '../hooks/useAddToCartFeedback';
 import { useProductDetail } from '../hooks/useProductDetail';
 
-/** 15-Specs: bottom bar 80 (h-bottom-bar) · snackbar 12 above it. */
+/** 15-Specs: bottom bar 80 (min-h-bottom-bar) · snackbar 12 above it. */
 const BOTTOM_BAR_HEIGHT = 80;
 const SNACKBAR_GAP = 12;
 
@@ -105,7 +105,7 @@ export function ProductDetailScreen({
             className="bg-surface shadow-bar"
             style={[{ paddingBottom: insets.bottom }, getLegacyShadowStyle('bar')]}
           >
-            <View className="h-bottom-bar p-4">
+            <View className="min-h-bottom-bar p-4">
               <Button
                 label={isAdded ? 'Agregado' : 'Agregar al carrito'}
                 size="lg"

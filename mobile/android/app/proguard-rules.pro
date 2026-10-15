@@ -8,3 +8,9 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+
+# react-native-screens: RNScreensFragmentFactory (MainActivity) recognizes screen
+# fragments by their package name when Android recreates the Activity (e.g. a
+# font size change). R8 renames them, the check fails and the app crashes with
+# "Screen fragments should never be restored". Keep only their names.
+-keepnames class com.swmansion.rnscreens.** extends androidx.fragment.app.Fragment

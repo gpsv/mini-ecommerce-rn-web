@@ -1,4 +1,5 @@
 import { Text, View } from 'react-native';
+import { TEXT_METRICS, getFixedScaleTextProps } from '../../theme/typography';
 
 const MAX_VISIBLE_COUNT = 9;
 
@@ -15,6 +16,11 @@ interface CountBadgeProps {
 
 export type BadgeProps = (LabelBadgeProps | CountBadgeProps) & {
   className?: string;
+  /**
+   * Scales the text by this factor instead of the system font scale, where the
+   * layout computes its height in JS (ProductCard).
+   */
+  fixedFontScale?: number;
 };
 
 const LABEL_CONTAINER_CLASS: Record<LabelBadgeProps['variant'], string> = {
@@ -28,7 +34,7 @@ const LABEL_TEXT_CLASS: Record<LabelBadgeProps['variant'], string> = {
 };
 
 export function Badge(props: BadgeProps) {
-  const { className = '' } = props;
+  const { className = '', fixedFontScale } = props;
 
   if (props.variant === 'count') {
     if (props.count <= 0) {
@@ -49,11 +55,14 @@ export function Badge(props: BadgeProps) {
 
   return (
     <View
-      className={`self-start h-5 px-2 rounded-full justify-center ${LABEL_CONTAINER_CLASS[props.variant]} ${className}`}
+      className={`self-start min-h-5 py-0.5 px-2 rounded-full justify-center ${LABEL_CONTAINER_CLASS[props.variant]} ${className}`}
     >
       <Text
         className={`font-sans text-caption ${LABEL_TEXT_CLASS[props.variant]}`}
         numberOfLines={1}
+        {...(fixedFontScale === undefined
+          ? undefined
+          : getFixedScaleTextProps(TEXT_METRICS.caption, fixedFontScale))}
       >
         {props.label}
       </Text>

@@ -53,7 +53,7 @@ export function CheckoutScreen({ navigation }: RootStackScreenProps<'Checkout'>)
           className="bg-surface shadow-bar"
           style={[{ paddingBottom: insets.bottom }, getLegacyShadowStyle('bar')]}
         >
-          <View className="h-bottom-bar p-4">
+          <View className="min-h-bottom-bar p-4">
             <Button
               label={isBusy ? 'Procesando…' : 'Confirmar compra'}
               size="lg"

@@ -48,7 +48,7 @@ export function TextField({
         accessibilityHint={hasError ? error : hint}
         accessibilityState={{ disabled }}
         placeholderTextColorClassName="accent-text-muted"
-        className={`h-12 rounded-md font-sans text-[16px] ${
+        className={`min-h-12 rounded-md font-sans text-[16px] ${
           disabled ? 'bg-disabled text-disabled-foreground' : 'bg-surface text-text'
         } ${hasError ? ERROR_BORDER_CLASS : DEFAULT_BORDER_CLASS}`}
         {...inputProps}

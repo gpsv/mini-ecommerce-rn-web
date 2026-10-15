@@ -7,7 +7,7 @@ import { AppText } from '../atoms/AppText';
 import { IconButton } from '../atoms/IconButton';
 
 interface HomeHeaderProps {
-  /** Catalog: logo + "Mi Surtido". */
+  /** Catalog: logo + "MiniShop". */
   variant: 'home';
 }
 
@@ -25,7 +25,7 @@ export type AppHeaderProps = (HomeHeaderProps | BackHeaderProps) & {
   rightAction?: ReactNode;
 };
 
-const APP_NAME = 'Mi Surtido';
+const APP_NAME = 'MiniShop';
 
 function AppLogo() {
   const primaryColor = useTokenColor('--color-primary');
@@ -41,19 +41,22 @@ function AppLogo() {
   );
 }
 
-/** 56 high (h-header) below the status bar; the primary background goes edge to edge. */
+/**
+ * At least 56 high (min-h-header) below the status bar, so large fonts are not
+ * clipped; the primary background goes edge to edge.
+ */
 export function AppHeader(props: AppHeaderProps) {
   const insets = useSafeAreaInsets();
 
   return (
     <View className="bg-primary" style={{ paddingTop: insets.top }}>
       {props.variant === 'home' ? (
-        <View className="h-header flex-row items-center justify-between pl-4 pr-1">
+        <View className="min-h-header flex-row items-center justify-between pl-4 pr-1">
           <AppLogo />
           {props.rightAction}
         </View>
       ) : (
-        <View className="h-header flex-row items-center gap-1 px-1">
+        <View className="min-h-header flex-row items-center gap-1 px-1">
           <IconButton
             icon={ArrowLeft}
             accessibilityLabel="Regresar"

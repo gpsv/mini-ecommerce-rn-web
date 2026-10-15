@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android resources cannot read design/tokens.css: keep in sync with the color-primary token. -->
+    <color name="ic_launcher_background">#1F5FAD</color>
+    <!-- Token color-primary-foreground. -->
+    <color name="ic_launcher_foreground">#FFFFFF</color>
+</resources>

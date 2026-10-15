@@ -22,7 +22,7 @@ export function CartSummary({ totalItems, totalInCents, onCheckout }: CartSummar
     >
       <View className="p-4 gap-1">
         <AppText tone="muted">{`Productos: ${totalItems}`}</AppText>
-        <View className="flex-row items-baseline justify-between">
+        <View className="flex-row flex-wrap items-baseline justify-between gap-x-2">
           <AppText className="text-[18px] leading-6 font-semibold">Total:</AppText>
           <Price cents={totalInCents} size="md" tone="total" />
         </View>

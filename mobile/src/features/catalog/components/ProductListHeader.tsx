@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, type LayoutChangeEvent } from 'react-native';
 import { AppText } from '../../../shared/components/atoms/AppText';
 import {
   CategoryChips,
@@ -13,20 +13,20 @@ export interface ProductListHeaderProps {
   categoryOptions: readonly CategoryChipOption[];
   selectedCategory: string | null;
   onSelectCategory: (category: string | null) => void;
-  isLoading: boolean;
-  totalCount: number;
+  /** null while there is no data (loading or error): the count is hidden. */
+  totalCount: number | null;
+  /** The screen uses the measured height as the getItemLayout offset. */
+  onLayout: (event: LayoutChangeEvent) => void;
 }
 
-function getCountLabel(isLoading: boolean, totalCount: number): string {
-  if (isLoading) {
-    return 'Cargando productos…';
-  }
+function getCountLabel(totalCount: number): string {
   return `${totalCount} ${totalCount === 1 ? 'producto' : 'productos'}`;
 }
 
 /**
- * Scrolls with the grid (03-Listado-CargandoMas). Fixed 148 high
- * (LIST_HEADER_HEIGHT) so getItemLayout offsets stay exact.
+ * Scrolls with the grid (03-Listado-CargandoMas). 148 high with the count at
+ * font scale 1 (124 without it); it grows with larger fonts instead of
+ * clipping, and the screen measures it so getItemLayout offsets stay exact.
  */
 export function ProductListHeader({
   searchText,
@@ -35,11 +35,11 @@ export function ProductListHeader({
   categoryOptions,
   selectedCategory,
   onSelectCategory,
-  isLoading,
   totalCount,
+  onLayout,
 }: ProductListHeaderProps) {
   return (
-    <View className="h-[148px]">
+    <View onLayout={onLayout}>
       <View className="px-gutter pt-3">
         <SearchBar
           value={searchText}
@@ -52,11 +52,13 @@ export function ProductListHeader({
         selectedValue={selectedCategory}
         onSelect={onSelectCategory}
       />
-      <View className="h-6 px-gutter">
-        <AppText variant="caption" accessibilityLiveRegion="polite" numberOfLines={1}>
-          {getCountLabel(isLoading, totalCount)}
-        </AppText>
-      </View>
+      {totalCount === null ? null : (
+        <View className="min-h-6 pb-2 px-gutter">
+          <AppText variant="caption" accessibilityLiveRegion="polite" numberOfLines={1}>
+            {getCountLabel(totalCount)}
+          </AppText>
+        </View>
+      )}
     </View>
   );
 }
