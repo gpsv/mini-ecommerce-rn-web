@@ -120,6 +120,25 @@ En P01, Claude Code revisó `CLAUDE.md` contra las versiones instaladas y señal
 - **Contexto:** `npm audit` reporta vulnerabilidades en mobile, todas en dependencias de la plantilla de React Native CLI (árbol de Jest y herramientas de desarrollo). Web reporta 0.
 - **Decisión:** no forzar actualizaciones (`npm audit fix --force` rompería la compatibilidad de la plantilla). Ninguna viene de las dependencias que agregué.
 
+## D21 · Sombras: `boxShadow` desde tokens, con respaldo para Android 7 y 8
+- **Contexto:** la IA verificó que Uniwind traduce `shadow-card` a `boxShadow` de React Native con las dos capas del diseño, pero RN solo lo dibuja desde Android 9 (API 28). El `minSdk` es 24.
+- **Decisión:** `boxShadow` como solución principal (sale directo de `design/tokens.css`, sin duplicar valores) y `getLegacyShadowStyle()` que aplica `elevation` solo en Android con `Platform.Version < 28`. Con prueba unitaria para Android 27, Android 28 e iOS.
+- **Alternativas descartadas:** solo `boxShadow` (sin sombra en Android 7–8, que todavía usan equipos de gama baja); solo `elevation` (ignora los tokens del diseño); subir `minSdk` a 28 (decisión de negocio, no técnica).
+- **Pendiente honesto:** el respaldo está cubierto por pruebas, pero no se probó visualmente en un emulador API 24–27.
+- **Propuso:** la IA detectó el límite de API; la combinación es decisión mía.
+
+## D22 · `--text-price` renombrado a `--text-price-md`
+- **Contexto:** la IA detectó que `--text-price` (tamaño) y `--color-price` (color) generan la misma clase `text-price`, y Tailwind 4 aplica solo el color. Lo comprobó compilando.
+- **Decisión:** renombrar el token de tamaño a `--text-price-md` en `design/tokens.css`. La escala queda `sm`, `md`, `lg`, `xl` y el choque desaparece desde la raíz.
+- **Alternativas descartadas:** clases arbitrarias largas dentro del componente `Price` o un `@utility` propio en cada app: esconden el problema en lugar de resolverlo.
+- **Nota:** es el único ajuste hecho al archivo exportado por Claude Design. `design/reference/16-Tokens.html` conserva el nombre original como registro de la exportación.
+- **Propuso:** la IA detectó el choque y dio opciones; elegí renombrar.
+
+## D23 · Uniwind 1.12.2
+- **Contexto:** compatible con RN ≥ 0.81 y React ≥ 19, con guía oficial para React Native CLI sin Expo. La versión 1.12.2 tenía 9 días de publicada.
+- **Decisión:** usarla con versión exacta (sin `^`) para que una actualización no rompa el proyecto. Tailwind 4.3.3 exacto en ambas apps.
+- **Riesgo aceptado:** librería joven; el plan B era NativeWind o `StyleSheet` con tokens en TypeScript.
+
 ---
 
 <!-- Plantilla para nuevas decisiones

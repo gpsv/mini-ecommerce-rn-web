@@ -1,5 +1,6 @@
 const path = require('path');
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
+const { withUniwindConfig } = require('uniwind/metro');
 
 const corePath = path.resolve(__dirname, '../core');
 const designPath = path.resolve(__dirname, '../design');
@@ -22,4 +23,11 @@ const config = {
   },
 };
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+// Uniwind must be the outermost wrapper (https://docs.uniwind.dev/quickstart).
+module.exports = withUniwindConfig(
+  mergeConfig(getDefaultConfig(__dirname), config),
+  {
+    cssEntryFile: './src/app/global.css',
+    dtsFile: './src/uniwind-types.d.ts',
+  },
+);

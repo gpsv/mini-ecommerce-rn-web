@@ -141,7 +141,10 @@ Repositorio único, **sin npm workspaces** (evita problemas de hoisting con el a
 - Variantes por props (`variant`, `size`), no componentes duplicados.
 - Estilos solo con clases de Uniwind/Tailwind basadas en los tokens. Nada de colores hardcodeados. `StyleSheet` solo si Uniwind no puede expresarlo, y comentado.
 - **Excepción de color en JS:** las props que exigen un string de color (`android_ripple`, `ActivityIndicator`, `shadowColor`, color de íconos) leen el valor del token desde JS (hook de Uniwind para variables CSS, o un objeto de tema generado a partir de los tokens). Nunca un hex escrito a mano en un componente.
-- **Uniwind pendiente de verificar:** antes de instalarlo, confirma compatibilidad con RN 0.87.1 (`npm view uniwind peerDependencies` y documentación de React Native CLI sin Expo), y si su CSS puede importar `../design/tokens.css`. Si no es compatible, detente y propón alternativas con evidencia.
+- **Uniwind 1.12.2 verificado (P03):** compatible con RN 0.87.1 sin Expo; `mobile/src/app/global.css` importa `../../../design/tokens.css`. En móvil, `--font-sans` se sobrescribe por plataforma (Roboto en Android, System en iOS).
+- **Tamaño del precio:** usa `text-price-md` (o `-sm`, `-lg`, `-xl`) para tamaño y `text-price` para color. No existe `--text-price` base (D22).
+- **Color en JS:** funcionan `colorClassName="accent-*"` y `useCSSVariable('--color-*')` de Uniwind.
+- **Si la app queda en negro o no responde tras cambiar `metro.config.js`:** reinicia Metro con `--reset-cache` y cierra la app por completo (`adb shell am force-stop com.minishop`); recargar no basta.
 
 ## 8. Convenciones de nombres (clean code)
 
@@ -159,7 +162,7 @@ Repositorio único, **sin npm workspaces** (evita problemas de hoisting con el a
 ## 9. Android primero, iOS listo
 
 - `Pressable` con `android_ripple` y estado `pressed` para iOS.
-- Sombras: `elevation` en Android y `shadow*` en iOS, encapsuladas en un helper de `shared/platform`.
+- Sombras: clases `shadow-card` y `shadow-bar` de Uniwind, que se traducen a `boxShadow` (RN 0.87, Android 9+ e iOS). Respaldo para Android API < 28 con `getLegacyShadowStyle('card' | 'bar')` de `shared/platform/shadows.ts` (`elevation` 2 y 8). Ver D21.
 - Edge-to-edge con `react-native-safe-area-context` (`useSafeAreaInsets`), sin `SafeAreaView` de React Native.
 - El botón atrás físico lo maneja el native stack; no agregues `BackHandler` salvo en flujos que lo requieran (checkout en proceso).
 - `accessibilityLabel` y `accessibilityRole` en botones de solo ícono (+, −, eliminar, carrito).

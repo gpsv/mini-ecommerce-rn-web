@@ -76,14 +76,13 @@
   --text-caption--line-height: 16px;
   --text-caption--font-weight: 500;
 
-  --text-price: 22px;
-  --text-price--line-height: 28px;
-  --text-price--font-weight: 800;
-
-  /* variantes de Price */
+  /* Price: sm / md / lg / xl. Sin --text-price base: chocaría con --color-price (text-price = color) */
   --text-price-sm: 18px;
   --text-price-sm--line-height: 24px;
   --text-price-sm--font-weight: 800;
+  --text-price-md: 22px;
+  --text-price-md--line-height: 28px;
+  --text-price-md--font-weight: 800;
   --text-price-lg: 28px;
   --text-price-lg--line-height: 34px;
   --text-price-lg--font-weight: 800;

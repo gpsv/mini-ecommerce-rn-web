@@ -1,0 +1,21 @@
+@import 'tailwindcss';
+@import 'uniwind';
+@import '../../../design/tokens.css';
+
+/* global.css lives in src/app; scan all of src/ for classNames. */
+@source '../';
+
+/*
+ * tokens.css defines a web font stack, but React Native fontFamily accepts a
+ * single family. Override it per platform here so tokens.css stays untouched.
+ */
+@layer theme {
+  :root {
+    @variant android {
+      --font-sans: 'Roboto';
+    }
+    @variant ios {
+      --font-sans: 'System';
+    }
+  }
+}

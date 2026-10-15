@@ -97,6 +97,60 @@ También aprueba borrar los archivos huérfanos de la plantilla [...]. npm audit
 
 ---
 
+## P-D · Diseño en Claude Design
+- **Herramienta:** Claude Design.
+- **Prompt (resumen):** brief con el contexto de la prueba, los datos reales de fakestoreapi (20 productos, 4 categorías, títulos largos, imágenes con fondo blanco), las 4 pantallas móviles con todos sus estados, 4 pantallas web, hoja de componentes con los nombres de `CLAUDE.md` y los nombres exactos de tokens para `@theme` de Tailwind 4. Pedí un estilo inspirado en tiendas de catálogo mexicanas **sin usar logo, nombre ni imágenes de ninguna marca real**.
+- **Por qué:** diseñar primero y construir después; Claude Code traduce mejor un diseño definido que diseñar a ciegas. Los nombres de componentes y tokens coinciden con el código desde el inicio.
+- **Resultado:** "Mi Surtido": 20 tableros (listado con cargando, cargando más, error y sin resultados; detalle y agregado; carrito, vacío y confirmación; checkout, error de campo, procesando y confirmado; 4 pantallas web; componentes; especificaciones; tokens) y `tokens.css` con contraste AA verificado.
+- **Revisión y correcciones:**
+  - El carrito mostraba el − deshabilitado en cantidad 1, contrario a D08. Pedí cambiarlo por el ícono de eliminar y agregar el tablero de confirmación.
+  - Anoté tres riesgos para React Native: fuentes múltiples en `--font-sans`, sintaxis `rgb()` con espacios y `box-shadow`. Se verificaron en P03.
+  - Las especificaciones fijan la tarjeta en 158 × 350 dp: permite `getItemLayout` en la FlatList.
+- **Entregables en el repo:** `design/tokens.css`, `design/reference/` (código fuente de los 20 tableros, con medidas exactas) y `design/screens/` (capturas PNG).
+- **Commit:** `design: agrega tokens, referencia de tableros y capturas de Claude Design`
+
+---
+
+## P03 · Estilos con Uniwind (móvil) y Tailwind 4 (web) desde tokens compartidos
+- **Herramienta:** Claude Code, Plan mode.
+- **Prompt:**
+```
+Reto técnico: lee CLAUDE.md y DECISIONS.md antes de empezar. Ya estoy en Node 22 (ver .nvmrc).
+
+El diseño ya está en el repo (commit propio, hecho en Claude Design):
+- design/tokens.css: tokens en formato @theme de Tailwind 4. Es la fuente de verdad visual.
+- design/reference/: código fuente de los 20 tableros, con medidas y textos exactos. Lee primero design/reference/README.md, 15-Specs.html y 14-Componentes.html.
+- design/screens/: capturas PNG de cada pantalla.
+
+Tarea P03: configurar estilos en ambas apps leyendo design/tokens.css.
+1. Mobile, Uniwind: ANTES de instalar, verifica compatibilidad con RN 0.87.1 y React Native CLI (sin Expo). Verifica que el CSS de mobile pueda importar ../design/tokens.css. Verifica en React Native: a) --font-sans con varias familias, b) sombras con rgb() y box-shadow de varias capas, c) escalas --text-*--font-weight y --line-height. Prueba cómo leer un token desde JS (D14) con un ActivityIndicator.
+2. Web, Tailwind CSS 4 con @tailwindcss/vite: index.css con @import "tailwindcss" y el import de los tokens.
+3. Prueba de humo en ambas App.tsx: tarjeta, título, precio y botón con clases de los tokens. Sin colores hardcodeados.
+Primero dame el plan. No instales nada sin mi aprobación. Al terminar: typecheck, lint y test, y dime qué debo ver para comparar con design/screens/m1-listado.png. No hagas commit.
+```
+- **Por qué lo escribí así:** verificar compatibilidad **antes** de instalar una librería joven, y convertir los tres riesgos del diseño en preguntas concretas para que la IA las pruebe con evidencia en lugar de suponer.
+- **Preguntas de la IA durante el plan y mis respuestas:**
+  - Sombras: detectó que `boxShadow` no se dibuja en Android < 9 y el `minSdk` es 24. Decidí `boxShadow` + respaldo con `elevation` para API < 28 (D21).
+  - Ubicación: `App.tsx` y `global.css` pasaron a `mobile/src/app/`, como dice `CLAUDE.md`, con `@source` para escanear todo `src/`.
+- **Resultado:** Uniwind 1.12.2 y Tailwind 4.3.3 con versiones exactas. `--font-sans` sobrescrito por plataforma en móvil. Uniwind traduce `shadow-card` a `boxShadow` con las dos capas. Las dos formas de leer color desde JS funcionan.
+- **Hallazgos de la IA:**
+  - **Choque de nombres** `text-price`: el token de tamaño y el de color generan la misma clase, y Tailwind aplica solo el color. Lo comprobó compilando (D22).
+  - TypeScript 6 exige declarar los `import './global.css'`; Uniwind publica TypeScript sin compilar y Jest necesita transformarlo.
+- **Problema en la verificación visual:** la web se veía igual al diseño, pero Android mostraba **pantalla negra**.
+  - Le pedí diagnosticar antes de cambiar nada. Con `adb exec-out screencap`, `uiautomator dump` y `logcat` demostró que React no había dibujado ninguna vista (no era texto negro sobre negro) y encontró `Unable to dispatch touch events to JS as the React instance has not been attached`.
+  - Descartó con evidencia un bundle viejo en `android/` y el modo oscuro.
+  - Causa más probable: una instancia de React rota tras un error de resolución anterior al reinicio de Metro. Se resolvió con un reinicio en frío de la app (`am force-stop`), **sin cambiar código**. Fue honesta en que es la causa más probable, no confirmada.
+- **Correcciones mías:**
+  - Renombrar `--text-price` a `--text-price-md` (D22).
+  - Exigir el respaldo de `elevation` que había quedado fuera (D21), con prueba unitaria.
+- **Verificación propia:**
+  - `typecheck`, `lint`, `test` (4/4) y build de web en verde.
+  - **Web:** fondo, tarjeta con sombra, precio naranja grande y botón azul, igual que `design/screens/m1-listado.png`.
+  - **Android (API 35):** el mismo resultado, con `boxShadow` visible y los dos spinners azules.
+- **Commit:** `feat(ui): configura Uniwind y Tailwind 4 con tokens de diseño compartidos (P03)`
+
+---
+
 <!-- Plantilla
 ## PXX · Título
 - **Prompt:**
